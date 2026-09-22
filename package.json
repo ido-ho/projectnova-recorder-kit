@@ -1,0 +1,11 @@
+{
+  "name": "com.projectnova.recorder-kit",
+  "version": "0.8.0",
+  "displayName": "ProjectNova Recorder Kit",
+  "description": "Editor-side ad-capture director + CommandRelay file transport. Add the package; ping and screenshot work with no game C#. Per-game shots and cheats are data under Library/Nova, not files in the studio repo.",
+  "unity": "2022.2",
+  "dependencies": {
+    "com.unity.ugui": "1.0.0",
+    "com.unity.nuget.newtonsoft-json": "3.2.1"
+  }
+}
