@@ -1,0 +1,19 @@
+{
+    "name": "ProjectNova.RecorderKit.UnityRecorder.Editor",
+    "rootNamespace": "ProjectNova.RecorderKit",
+    "references": [
+        "ProjectNova.RecorderKit.Editor",
+        "Unity.Recorder.Editor"
+    ],
+    "includePlatforms": [ "Editor" ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [ "NOVA_UNITY_RECORDER" ],
+    "versionDefines": [
+        { "name": "com.unity.recorder", "expression": "4.0.0", "define": "NOVA_UNITY_RECORDER" }
+    ],
+    "noEngineReferences": false
+}
