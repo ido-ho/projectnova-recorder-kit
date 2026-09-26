@@ -1,0 +1,23 @@
+{
+    "name": "ProjectNova.RecorderKit.Editor.Tests",
+    "rootNamespace": "ProjectNova.RecorderKit.Tests",
+    "references": [
+        "ProjectNova.RecorderKit.Editor",
+        "ProjectNova.RecorderKit.UnityRecorder.Editor",
+        "UnityEngine.UI",
+        "Unity.Recorder.Editor",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
+    ],
+    "includePlatforms": [ "Editor" ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [ "nunit.framework.dll", "Newtonsoft.Json.dll" ],
+    "autoReferenced": false,
+    "defineConstraints": [ "UNITY_INCLUDE_TESTS" ],
+    "versionDefines": [
+        { "name": "com.unity.recorder", "expression": "4.0.0", "define": "NOVA_UNITY_RECORDER_TESTS" }
+    ],
+    "noEngineReferences": false
+}
