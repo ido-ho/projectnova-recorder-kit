@@ -1,0 +1,99 @@
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using NUnit.Framework;
+
+namespace ProjectNova.RecorderKit.Tests
+{
+    /// <summary>
+    /// Learn-and-drive v3 P2 — THE TICK-LIST INPUT, one fixture for both sides:
+    /// <c>Editor/Tests/Fixtures/tick-list.cases.json</c>, run here against <see cref="TickList.Refusal"/> and
+    /// <see cref="CheatRisk.Why"/>, and by the website's <c>apps/renderer/src/game-ads/learn/tick-list.spec.ts</c> against
+    /// its <c>tickListRefusal</c> and <c>tickListRisk</c>. A file one side reads and the other refuses is a send that fails
+    /// on the studio's machine; a command one side calls risky and the other does not is a row that lies (invariant 99).
+    /// </summary>
+    public class TickListSharedCasesTests
+    {
+        private const string Relative = "Editor/Tests/Fixtures/tick-list.cases.json";
+
+        private static string? FixturePath()
+        {
+            var info = UnityEditor.PackageManager.PackageInfo.FindForAssembly(typeof(Levers).Assembly);
+            if (info != null && !string.IsNullOrEmpty(info.resolvedPath))
+            {
+                var resolved = Path.Combine(info.resolvedPath, Relative);
+                if (File.Exists(resolved)) return resolved;
+            }
+            var dir = new DirectoryInfo(Directory.GetCurrentDirectory());
+            for (var i = 0; i < 6 && dir != null; i++, dir = dir.Parent)
+            {
+                var guess = Path.Combine(dir.FullName, "com.projectnova.recorder-kit", Relative);
+                if (File.Exists(guess)) return guess;
+            }
+            return null;
+        }
+
+        /// <summary>The case's file text, built exactly as the website's runner builds it.</summary>
+        private static string TextOf(JObject c)
+        {
+            if (c["text"] is { Type: JTokenType.String } text) return text.Value<string>()!;
+            if (c["generate"] is JObject generate)
+            {
+                var n = generate["count"]!.Value<int>();
+                return new JObject
+                {
+                    ["$schemaVersion"] = 1,
+                    ["candidates"] = new JArray(Enumerable.Range(0, n).Select(i => (object)new JObject { ["command"] = $"raw cheat{i}" }).ToArray()),
+                }.ToString(Formatting.None);
+            }
+            if (c["commandLength"] is { } length)
+                return new JObject
+                {
+                    ["$schemaVersion"] = 1,
+                    ["candidates"] = new JArray(new JObject { ["command"] = "raw " + new string('x', length.Value<int>() - 4) }),
+                }.ToString(Formatting.None);
+            return c["doc"]!.ToString(Formatting.None);
+        }
+
+        [Test]
+        public void EveryTickListInTheSharedFixtureIsReadOrRefusedAsItSays_AndItsRiskyCommandsAreTheSame()
+        {
+            var path = FixturePath();
+            // FAIL, never skip: a missing shared fixture means the two sides are no longer held to one rule.
+            Assert.IsNotNull(path, "the shared tick-list fixture was not found (" + Relative + ")");
+            var root = NovaJson.ParseObject(File.ReadAllText(path!));
+            Assert.AreEqual(Levers.MaxLevers, root["maxCandidates"]!.Value<int>(), "the candidate cap");
+            Assert.AreEqual(Levers.MaxLeverLength, root["maxCommandLength"]!.Value<int>(), "the command length cap");
+            var cases = ((JArray)root["cases"]!).Cast<JObject>().ToList();
+            Assert.GreaterOrEqual(cases.Count(c => c["refused"]!.Value<bool>()), 25, "the refusals shrank");
+            Assert.GreaterOrEqual(cases.Count(c => !c["refused"]!.Value<bool>()), 10, "the controls shrank");
+
+            var failures = new List<string>();
+            foreach (var c in cases)
+            {
+                var name = c["name"]!.Value<string>();
+                var refused = c["refused"]!.Value<bool>();
+                var refusal = TickList.Refusal(TextOf(c), out var candidates);
+                if ((refusal != null) != refused)
+                {
+                    failures.Add($"'{name}': expected {(refused ? "refused" : "read")}, the kit says {refusal ?? "read"}");
+                    continue;
+                }
+                if (refused)
+                {
+                    if (candidates.Count != 0) failures.Add($"'{name}': refused, yet {candidates.Count} candidates came back");
+                    continue;
+                }
+                var risky = candidates.Select(x => x.Command).Where(cmd => CheatRisk.Why(cmd, candidates) != null)
+                    .OrderBy(s => s, System.StringComparer.Ordinal).ToList();
+                var want = (c["risky"] as JArray ?? new JArray()).Select(t => t.Value<string>()!)
+                    .OrderBy(s => s, System.StringComparer.Ordinal).ToList();
+                if (!risky.SequenceEqual(want))
+                    failures.Add($"'{name}': risky [{string.Join(" | ", risky)}], the fixture says [{string.Join(" | ", want)}]");
+            }
+            Assert.IsEmpty(failures, $"{failures.Count} shared tick-list verdicts disagree with this kit:\n" + string.Join("\n", failures));
+        }
+    }
+}
