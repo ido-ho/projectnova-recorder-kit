@@ -1,0 +1,1709 @@
+{
+  "$comment": "ONE list of cases, run by BOTH sides: the kit's JsonShotLoaderTests (C#) and the hosted shots-lint spec (TS). 'kitErrors' are the loader's exact words; an entry ending in ': ' is a PREFIX (the parser's own message follows and differs by platform). 'shots' is what is loaded, in order. Change the grammar on one side and the other side's run of this file goes red — that is the point (invariant 101).",
+  "cases": [
+    {
+      "name": "the README's own example loads",
+      "shots": [
+        "board_bigwin"
+      ],
+      "kitErrors": [],
+      "levers": [
+        "RollTargetType LargeCoin"
+      ],
+      "doc": {
+        "$schemaVersion": 1,
+        "shots": [
+          {
+            "name": "board_bigwin",
+            "note": "why",
+            "setup": [
+              "RollTargetType LargeCoin"
+            ],
+            "steps": [
+              {
+                "kind": "click",
+                "name": "RollBTN"
+              },
+              {
+                "kind": "wait",
+                "seconds": 9,
+                "note": "6.2s worst case"
+              }
+            ],
+            "settle": {
+              "kind": "all",
+              "parts": [
+                {
+                  "kind": "present",
+                  "name": "RollBTN"
+                },
+                {
+                  "kind": "absent",
+                  "name": "CollectBtn"
+                }
+              ]
+            },
+            "expectState": "BoardState",
+            "settleTimeoutSec": 15
+          }
+        ]
+      }
+    },
+    {
+      "name": "a get in setup or in a cheat step is a lever (the fourteenth audit: it runs a property getter, which is code)",
+      "shots": [
+        "reads"
+      ],
+      "kitErrors": [],
+      "levers": [
+        "get Audio.Muted",
+        "get Player.coins"
+      ],
+      "doc": {
+        "$schemaVersion": 1,
+        "shots": [
+          {
+            "name": "reads",
+            "setup": [
+              "get Player.coins"
+            ],
+            "steps": [
+              {
+                "kind": "cheat",
+                "command": "get Audio.Muted"
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "X"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "every step kind and every condition kind",
+      "shots": [
+        "all-kinds"
+      ],
+      "kitErrors": [],
+      "levers": [
+        "call Shop.Open",
+        "call Wave.Next",
+        "timeScale"
+      ],
+      "doc": {
+        "$schemaVersion": 1,
+        "shots": [
+          {
+            "name": "all-kinds",
+            "baseline": "lobby",
+            "resist": false,
+            "parameters": [
+              "hero"
+            ],
+            "arm": {
+              "kind": "interactable",
+              "name": "Go"
+            },
+            "armTimeoutSec": 3,
+            "steps": [
+              {
+                "kind": "click",
+                "name": "A",
+                "until": {
+                  "kind": "present",
+                  "name": "B"
+                },
+                "index": 1,
+                "timeout": 2,
+                "retryEvery": 0.5
+              },
+              {
+                "kind": "hold",
+                "name": "A",
+                "seconds": 1.5,
+                "index": 0
+              },
+              {
+                "kind": "wait",
+                "seconds": 0.25
+              },
+              {
+                "kind": "waitFor",
+                "condition": {
+                  "kind": "textContains",
+                  "name": "Label",
+                  "substring": ""
+                },
+                "timeout": 4
+              },
+              {
+                "kind": "cheat",
+                "command": "call Shop.Open"
+              },
+              {
+                "kind": "cheatUntil",
+                "command": "call Wave.Next",
+                "until": {
+                  "kind": "state",
+                  "name": "Boss"
+                },
+                "timeout": 10,
+                "retryEvery": 2
+              },
+              {
+                "kind": "timeScale",
+                "factor": 2
+              },
+              {
+                "kind": "vision",
+                "prompt": "is the boss on screen?",
+                "timeout": 30
+              }
+            ],
+            "settle": {
+              "kind": "all",
+              "parts": [
+                {
+                  "kind": "all",
+                  "parts": [
+                    {
+                      "kind": "absent",
+                      "name": "X"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "an empty shots array is an empty catalog, no error",
+      "shots": [],
+      "kitErrors": [],
+      "levers": [],
+      "doc": {
+        "$schemaVersion": 1,
+        "shots": []
+      }
+    },
+    {
+      "name": "$schemaVersion missing",
+      "shots": [],
+      "kitErrors": [
+        "unsupported $schemaVersion '(missing)' — this kit reads version 1"
+      ],
+      "levers": [],
+      "doc": {
+        "shots": []
+      }
+    },
+    {
+      "name": "$schemaVersion 2",
+      "shots": [],
+      "kitErrors": [
+        "unsupported $schemaVersion '2' — this kit reads version 1"
+      ],
+      "levers": [],
+      "doc": {
+        "$schemaVersion": 2,
+        "shots": []
+      }
+    },
+    {
+      "name": "$schemaVersion as a string",
+      "shots": [],
+      "kitErrors": [
+        "unsupported $schemaVersion '1' — this kit reads version 1"
+      ],
+      "levers": [],
+      "doc": {
+        "$schemaVersion": "1",
+        "shots": []
+      }
+    },
+    {
+      "name": "$schemaVersion as an array 40 deep: shown compact and cut to 64 characters",
+      "$why": "The eleventh audit: the kit rendered a refused version INDENTED, so its message grew with the square of the depth (an 800,000,056-character error at 20,000). Both sides now show it compact (Newtonsoft's Formatting.None, JSON.stringify) and cut to its first 64 characters.",
+      "shots": [],
+      "kitErrors": [
+        "unsupported $schemaVersion '[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]' — this kit reads version 1"
+      ],
+      "levers": [],
+      "text": "{ \"$schemaVersion\": [[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]], \"shots\": [] }"
+    },
+    {
+      "name": "$schemaVersion as a string whose 64th character begins an emoji: the cut stops one short",
+      "$why": "The eleventh fold: both sides cut a refused version to 64 characters, and neither leaves half of a surrogate pair — the tenth audit's lesson (a lone half is a character the two readers read differently).",
+      "shots": [],
+      "kitErrors": [
+        "unsupported $schemaVersion 'vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv' — this kit reads version 1"
+      ],
+      "levers": [],
+      "doc": {
+        "$schemaVersion": "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv😀vvv",
+        "shots": []
+      }
+    },
+    {
+      "name": "arrays nested one past the reader's cap, in an ignored field",
+      "$why": "The eleventh audit: the kit's reader (NovaJson.ParseObject) refuses an array or object inside more than 256 others, the root counted, by name and before anything in the document is read; the site's lint refuses the same document in the same words. A 20,000-deep $schemaVersion cost 1.7 s on every load before it.",
+      "shots": [],
+      "kitErrors": [
+        "shots file is not valid JSON: it nests arrays and objects more than 256 deep"
+      ],
+      "levers": [],
+      "text": "{ \"$schemaVersion\": 1, \"note\": [[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]], \"shots\": [] }"
+    },
+    {
+      "name": "no shots array",
+      "shots": [],
+      "kitErrors": [
+        "shots file has no 'shots' array"
+      ],
+      "levers": [],
+      "doc": {
+        "$schemaVersion": 1,
+        "shots": {}
+      }
+    },
+    {
+      "name": "a shot that is not an object; the rest still load",
+      "shots": [
+        "ok"
+      ],
+      "kitErrors": [
+        "shots[0]: expected a shot object"
+      ],
+      "levers": [],
+      "doc": {
+        "$schemaVersion": 1,
+        "shots": [
+          "nope",
+          {
+            "name": "ok",
+            "steps": [
+              {
+                "kind": "wait",
+                "seconds": 1
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "Panel"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "missing name / empty name / name of the wrong type",
+      "shots": [],
+      "kitErrors": [
+        "shots[0]: shot is missing 'name'",
+        "shots[1]: shot is missing 'name'",
+        "shots[2]: shot is missing 'name'"
+      ],
+      "levers": [],
+      "doc": {
+        "$schemaVersion": 1,
+        "shots": [
+          {
+            "steps": [],
+            "settle": {
+              "kind": "present",
+              "name": "Panel"
+            }
+          },
+          {
+            "name": "",
+            "steps": [
+              {
+                "kind": "wait",
+                "seconds": 1
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "Panel"
+            }
+          },
+          {
+            "name": 7,
+            "steps": [
+              {
+                "kind": "wait",
+                "seconds": 1
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "Panel"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "steps missing, empty, not an array",
+      "shots": [],
+      "kitErrors": [
+        "shots[0] ('a'): shot needs a non-empty 'steps' array",
+        "shots[1] ('b'): shot needs a non-empty 'steps' array",
+        "shots[2] ('c'): shot needs a non-empty 'steps' array"
+      ],
+      "levers": [],
+      "doc": {
+        "$schemaVersion": 1,
+        "shots": [
+          {
+            "name": "a",
+            "settle": {
+              "kind": "present",
+              "name": "Panel"
+            }
+          },
+          {
+            "name": "b",
+            "steps": [],
+            "settle": {
+              "kind": "present",
+              "name": "Panel"
+            }
+          },
+          {
+            "name": "c",
+            "steps": "x",
+            "settle": {
+              "kind": "present",
+              "name": "Panel"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "settle missing",
+      "shots": [],
+      "kitErrors": [
+        "shots[0] ('a'): shot is missing 'settle' (required — there is no sane default; an omitted settle would never match anything)"
+      ],
+      "levers": [],
+      "doc": {
+        "$schemaVersion": 1,
+        "shots": [
+          {
+            "name": "a",
+            "steps": [
+              {
+                "kind": "wait",
+                "seconds": 1
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "settle is JSON null — not 'missing': it is read, and is not a condition",
+      "shots": [],
+      "kitErrors": [
+        "shots[0] ('a').settle: expected a condition object"
+      ],
+      "levers": [],
+      "doc": {
+        "$schemaVersion": 1,
+        "shots": [
+          {
+            "name": "a",
+            "steps": [
+              {
+                "kind": "wait",
+                "seconds": 1
+              }
+            ],
+            "settle": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "duplicate names: the first wins, the second is named",
+      "shots": [
+        "a",
+        "b"
+      ],
+      "kitErrors": [
+        "shots[1]: duplicate shot name 'a'"
+      ],
+      "levers": [],
+      "doc": {
+        "$schemaVersion": 1,
+        "shots": [
+          {
+            "name": "a",
+            "steps": [
+              {
+                "kind": "wait",
+                "seconds": 1
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "Panel"
+            }
+          },
+          {
+            "name": "a",
+            "steps": [
+              {
+                "kind": "wait",
+                "seconds": 1
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "Panel"
+            }
+          },
+          {
+            "name": "b",
+            "steps": [
+              {
+                "kind": "wait",
+                "seconds": 1
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "Panel"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "a bad step drops the WHOLE shot, by step index",
+      "shots": [
+        "b"
+      ],
+      "kitErrors": [
+        "shots[0] ('a').steps[1]: unknown step kind 'clcik'"
+      ],
+      "levers": [],
+      "doc": {
+        "$schemaVersion": 1,
+        "shots": [
+          {
+            "name": "a",
+            "steps": [
+              {
+                "kind": "wait",
+                "seconds": 1
+              },
+              {
+                "kind": "clcik",
+                "name": "X"
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "Panel"
+            }
+          },
+          {
+            "name": "b",
+            "steps": [
+              {
+                "kind": "wait",
+                "seconds": 1
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "Panel"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "step shapes",
+      "shots": [],
+      "kitErrors": [
+        "shots[0] ('s0').steps[0]: expected a step object",
+        "shots[1] ('s1').steps[0]: step is missing 'kind'",
+        "shots[2] ('s2').steps[0]: 'click' is missing 'name'",
+        "shots[3] ('s3').steps[0]: 'hold' is missing 'seconds'",
+        "shots[4] ('s4').steps[0]: 'hold' is missing 'seconds'",
+        "shots[5] ('s5').steps[0]: 'wait' is missing 'seconds'",
+        "shots[6] ('s6').steps[0]: 'waitFor' is missing 'condition'",
+        "shots[7] ('s7').steps[0]: 'cheat' is missing 'command'",
+        "shots[8] ('s8').steps[0]: 'cheatUntil' is missing 'until'",
+        "shots[9] ('s9').steps[0]: 'timeScale' is missing 'factor'",
+        "shots[10] ('s10').steps[0]: 'vision' is missing 'prompt'"
+      ],
+      "levers": [
+        "c",
+        "timeScale"
+      ],
+      "doc": {
+        "$schemaVersion": 1,
+        "shots": [
+          {
+            "name": "s0",
+            "steps": [
+              5
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "Panel"
+            }
+          },
+          {
+            "name": "s1",
+            "steps": [
+              {
+                "name": "X"
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "Panel"
+            }
+          },
+          {
+            "name": "s2",
+            "steps": [
+              {
+                "kind": "click"
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "Panel"
+            }
+          },
+          {
+            "name": "s3",
+            "steps": [
+              {
+                "kind": "hold",
+                "name": "X"
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "Panel"
+            }
+          },
+          {
+            "name": "s4",
+            "steps": [
+              {
+                "kind": "hold",
+                "name": "X",
+                "seconds": "2"
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "Panel"
+            }
+          },
+          {
+            "name": "s5",
+            "steps": [
+              {
+                "kind": "wait"
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "Panel"
+            }
+          },
+          {
+            "name": "s6",
+            "steps": [
+              {
+                "kind": "waitFor"
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "Panel"
+            }
+          },
+          {
+            "name": "s7",
+            "steps": [
+              {
+                "kind": "cheat",
+                "command": ""
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "Panel"
+            }
+          },
+          {
+            "name": "s8",
+            "steps": [
+              {
+                "kind": "cheatUntil",
+                "command": "c"
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "Panel"
+            }
+          },
+          {
+            "name": "s9",
+            "steps": [
+              {
+                "kind": "timeScale"
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "Panel"
+            }
+          },
+          {
+            "name": "s10",
+            "steps": [
+              {
+                "kind": "vision"
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "Panel"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "condition shapes — and the ORDER of the checks: a missing name is said before an unknown kind",
+      "shots": [],
+      "kitErrors": [
+        "shots[0] ('c0').settle: expected a condition object",
+        "shots[1] ('c1').settle: condition is missing 'kind'",
+        "shots[2] ('c2').settle: 'all' needs a non-empty 'parts' array",
+        "shots[3] ('c3').settle: condition 'present' is missing 'name'",
+        "shots[4] ('c4').settle: condition 'nearby' is missing 'name'",
+        "shots[5] ('c5').settle: unknown condition kind 'nearby'",
+        "shots[6] ('c6').settle: 'textContains' is missing 'substring'",
+        "shots[7] ('c7').settle.parts[1]: condition 'absent' is missing 'name'",
+        "shots[8] ('c8').steps[0].until: expected a condition object",
+        "shots[9] ('c9').steps[0].condition: expected a condition object"
+      ],
+      "levers": [],
+      "doc": {
+        "$schemaVersion": 1,
+        "shots": [
+          {
+            "name": "c0",
+            "steps": [
+              {
+                "kind": "wait",
+                "seconds": 1
+              }
+            ],
+            "settle": "x"
+          },
+          {
+            "name": "c1",
+            "steps": [
+              {
+                "kind": "wait",
+                "seconds": 1
+              }
+            ],
+            "settle": {}
+          },
+          {
+            "name": "c2",
+            "steps": [
+              {
+                "kind": "wait",
+                "seconds": 1
+              }
+            ],
+            "settle": {
+              "kind": "all",
+              "parts": []
+            }
+          },
+          {
+            "name": "c3",
+            "steps": [
+              {
+                "kind": "wait",
+                "seconds": 1
+              }
+            ],
+            "settle": {
+              "kind": "present"
+            }
+          },
+          {
+            "name": "c4",
+            "steps": [
+              {
+                "kind": "wait",
+                "seconds": 1
+              }
+            ],
+            "settle": {
+              "kind": "nearby"
+            }
+          },
+          {
+            "name": "c5",
+            "steps": [
+              {
+                "kind": "wait",
+                "seconds": 1
+              }
+            ],
+            "settle": {
+              "kind": "nearby",
+              "name": "X"
+            }
+          },
+          {
+            "name": "c6",
+            "steps": [
+              {
+                "kind": "wait",
+                "seconds": 1
+              }
+            ],
+            "settle": {
+              "kind": "textContains",
+              "name": "X"
+            }
+          },
+          {
+            "name": "c7",
+            "steps": [
+              {
+                "kind": "wait",
+                "seconds": 1
+              }
+            ],
+            "settle": {
+              "kind": "all",
+              "parts": [
+                {
+                  "kind": "present",
+                  "name": "A"
+                },
+                {
+                  "kind": "absent"
+                }
+              ]
+            }
+          },
+          {
+            "name": "c8",
+            "steps": [
+              {
+                "kind": "click",
+                "name": "A",
+                "until": null
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "Panel"
+            }
+          },
+          {
+            "name": "c9",
+            "steps": [
+              {
+                "kind": "waitFor",
+                "condition": null
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "Panel"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "optional fields of the wrong type",
+      "shots": [],
+      "kitErrors": [
+        "shots[0] ('o0'): 'expectState' must be a string",
+        "shots[1] ('o1'): 'baseline' must be a string",
+        "shots[2] ('o2'): unknown baseline 'menu' — this kit understands 'lobby' or 'board'",
+        "shots[3] ('o3'): 'resist' must be a boolean",
+        "shots[4] ('o4').arm: condition 'present' is missing 'name'",
+        "shots[5] ('o5'): 'expectState' must be a string",
+        "shots[6] ('o6'): 'resist' must be a boolean"
+      ],
+      "levers": [],
+      "doc": {
+        "$schemaVersion": 1,
+        "shots": [
+          {
+            "name": "o0",
+            "steps": [
+              {
+                "kind": "wait",
+                "seconds": 1
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "Panel"
+            },
+            "expectState": 3
+          },
+          {
+            "name": "o1",
+            "steps": [
+              {
+                "kind": "wait",
+                "seconds": 1
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "Panel"
+            },
+            "baseline": 3
+          },
+          {
+            "name": "o2",
+            "steps": [
+              {
+                "kind": "wait",
+                "seconds": 1
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "Panel"
+            },
+            "baseline": "menu"
+          },
+          {
+            "name": "o3",
+            "steps": [
+              {
+                "kind": "wait",
+                "seconds": 1
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "Panel"
+            },
+            "resist": "no"
+          },
+          {
+            "name": "o4",
+            "steps": [
+              {
+                "kind": "wait",
+                "seconds": 1
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "Panel"
+            },
+            "arm": {
+              "kind": "present"
+            }
+          },
+          {
+            "name": "o5",
+            "steps": [
+              {
+                "kind": "wait",
+                "seconds": 1
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "Panel"
+            },
+            "expectState": null
+          },
+          {
+            "name": "o6",
+            "steps": [
+              {
+                "kind": "wait",
+                "seconds": 1
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "Panel"
+            },
+            "resist": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "what the kit ACCEPTS silently: numbers of the wrong type take the default; setup that is not an array is empty; unknown fields are ignored",
+      "shots": [
+        "q0"
+      ],
+      "kitErrors": [],
+      "levers": [],
+      "doc": {
+        "$schemaVersion": 1,
+        "shots": [
+          {
+            "name": "q0",
+            "steps": [
+              {
+                "kind": "click",
+                "name": "A",
+                "timeout": "6",
+                "retryEvery": null,
+                "index": "0",
+                "untill": {
+                  "kind": "present",
+                  "name": "B"
+                }
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "Panel"
+            },
+            "settleTimeoutSec": "15",
+            "armTimeoutSec": null,
+            "setup": "RollTargetType",
+            "parameters": [
+              1,
+              "x"
+            ],
+            "untill": {
+              "kind": "present",
+              "name": "Z"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "the document is an array",
+      "shots": [],
+      "kitErrors": [
+        "shots file is not valid JSON: "
+      ],
+      "levers": [],
+      "text": "[]"
+    },
+    {
+      "name": "not JSON at all",
+      "shots": [],
+      "kitErrors": [
+        "shots file is not valid JSON: "
+      ],
+      "levers": [],
+      "text": "{ shots: "
+    },
+    {
+      "name": "a huge integer is a number, not a crash",
+      "$why": "An integer past 2^63 is a BigInteger to a .NET JSON reader and throws when read as a double. The site accepts it, so the kit reads it as a number rather than losing the whole file to the exception. Since the thirteenth audit (M2) a number of seconds is at most 600, so this one is refused by that sentence, which is how the case shows it was read as a number (read as absent, it would have loaded with the default); the case after it keeps a huge integer that loads.",
+      "shots": [],
+      "kitErrors": [
+        "shots[0] ('big').steps[0]: 'seconds' must be at most 600 seconds"
+      ],
+      "levers": [],
+      "text": "{ \"$schemaVersion\": 1, \"shots\": [ { \"name\": \"big\", \"steps\": [ { \"kind\": \"wait\", \"seconds\": 100000000000000000000 } ], \"settle\": { \"kind\": \"present\", \"name\": \"X\" } } ] }"
+    },
+    {
+      "name": "a huge integer where no rule bounds the number loads (the thirteenth audit)",
+      "$why": "the huge-integer case above is refused by the ceiling on seconds since the thirteenth audit; a timeScale factor has no bound, so this is still the case that a number past 2^63 is read, and loads, on both sides",
+      "shots": [
+        "big-factor"
+      ],
+      "kitErrors": [],
+      "levers": [
+        "timeScale"
+      ],
+      "text": "{ \"$schemaVersion\": 1, \"shots\": [ { \"name\": \"big-factor\", \"steps\": [ { \"kind\": \"timeScale\", \"factor\": 100000000000000000000 } ], \"settle\": { \"kind\": \"present\", \"name\": \"X\" } } ] }"
+    },
+    {
+      "name": "a name that looks like a date is a name",
+      "$why": "Newtonsoft turns any date-shaped string into a Date token, which every reader here then sees as 'missing'. Text stays text — a UI element may legitimately be called 2026-09-21T10:00:00Z, and a textContains substring routinely is.",
+      "shots": [
+        "dated"
+      ],
+      "kitErrors": [],
+      "levers": [],
+      "text": "{ \"$schemaVersion\": 1, \"shots\": [ { \"name\": \"dated\", \"steps\": [ { \"kind\": \"click\", \"name\": \"2026-09-21T10:00:00Z\", \"until\": { \"kind\": \"present\", \"name\": \"X\" } } ], \"settle\": { \"kind\": \"textContains\", \"name\": \"Clock\", \"substring\": \"2026-09-21T10:00:00\" } } ] }"
+    },
+    {
+      "name": "conditions nested 8 deep load; 9 deep are refused",
+      "$why": "A depth ceiling both sides share, checked on ENTERING a condition before anything else is read. Top-level condition = depth 1; each 'all' part is one deeper. The path named is the condition AT depth 9, reported once for that branch.",
+      "shots": [
+        "deep8"
+      ],
+      "kitErrors": [
+        "shots[1] ('deep9').settle.parts[0].parts[0].parts[0].parts[0].parts[0].parts[0].parts[0].parts[0]: conditions are nested more than 8 deep"
+      ],
+      "levers": [],
+      "text": "{ \"$schemaVersion\": 1, \"shots\": [ { \"name\": \"deep8\", \"steps\": [ { \"kind\": \"wait\", \"seconds\": 1 } ], \"settle\": { \"kind\": \"all\", \"parts\": [ { \"kind\": \"all\", \"parts\": [ { \"kind\": \"all\", \"parts\": [ { \"kind\": \"all\", \"parts\": [ { \"kind\": \"all\", \"parts\": [ { \"kind\": \"all\", \"parts\": [ { \"kind\": \"all\", \"parts\": [ { \"kind\": \"present\", \"name\": \"X\" } ] } ] } ] } ] } ] } ] } ] } }, { \"name\": \"deep9\", \"steps\": [ { \"kind\": \"wait\", \"seconds\": 1 } ], \"settle\": { \"kind\": \"all\", \"parts\": [ { \"kind\": \"all\", \"parts\": [ { \"kind\": \"all\", \"parts\": [ { \"kind\": \"all\", \"parts\": [ { \"kind\": \"all\", \"parts\": [ { \"kind\": \"all\", \"parts\": [ { \"kind\": \"all\", \"parts\": [ { \"kind\": \"all\", \"parts\": [ { \"kind\": \"present\", \"name\": \"X\" } ] } ] } ] } ] } ] } ] } ] } ] } } ] }"
+    },
+    {
+      "name": "levers are read from EVERY object in shots — a shot with no name, a lever that lives only in setup — and a non-object entry is skipped",
+      "shots": [
+        "ok"
+      ],
+      "kitErrors": [
+        "shots[0]: expected a shot object",
+        "shots[1]: shot is missing 'name'"
+      ],
+      "levers": [
+        "call NoName.Setup",
+        "call NoName.Step",
+        "call Only.InSetup"
+      ],
+      "doc": {
+        "$schemaVersion": 1,
+        "shots": [
+          "nope",
+          {
+            "setup": [
+              "call NoName.Setup"
+            ],
+            "steps": [
+              {
+                "kind": "cheat",
+                "command": "call NoName.Step"
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "Panel"
+            }
+          },
+          {
+            "name": "ok",
+            "setup": [
+              "call Only.InSetup"
+            ],
+            "steps": [
+              {
+                "kind": "wait",
+                "seconds": 1
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "Panel"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "every field read as seconds, below the floor, is refused by name (the twelfth audit, S1)",
+      "$why": "a cheatUntil with retryEvery 0 froze the editor for its whole timeout, in one tick: every field the loader reads as seconds must be a finite number of at least 0.1 (0, below 0, and just under the floor, one field per shot)",
+      "shots": [],
+      "kitErrors": [
+        "shots[0] ('click-timeout').steps[0]: 'timeout' must be a finite number of seconds, at least 0.1",
+        "shots[1] ('click-retry').steps[0]: 'retryEvery' must be a finite number of seconds, at least 0.1",
+        "shots[2] ('hold-seconds').steps[0]: 'seconds' must be a finite number of seconds, at least 0.1",
+        "shots[3] ('wait-seconds').steps[0]: 'seconds' must be a finite number of seconds, at least 0.1",
+        "shots[4] ('waitfor-timeout').steps[0]: 'timeout' must be a finite number of seconds, at least 0.1",
+        "shots[5] ('cheatuntil-timeout').steps[0]: 'timeout' must be a finite number of seconds, at least 0.1",
+        "shots[6] ('cheatuntil-retry').steps[0]: 'retryEvery' must be a finite number of seconds, at least 0.1",
+        "shots[7] ('vision-timeout').steps[0]: 'timeout' must be a finite number of seconds, at least 0.1",
+        "shots[8] ('settle-timeout'): 'settleTimeoutSec' must be a finite number of seconds, at least 0.1",
+        "shots[9] ('arm-timeout'): 'armTimeoutSec' must be a finite number of seconds, at least 0.1"
+      ],
+      "levers": [
+        "set Player.coins 5"
+      ],
+      "doc": {
+        "$schemaVersion": 1,
+        "shots": [
+          {
+            "name": "click-timeout",
+            "steps": [
+              {
+                "kind": "click",
+                "name": "A",
+                "timeout": 0
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "X"
+            }
+          },
+          {
+            "name": "click-retry",
+            "steps": [
+              {
+                "kind": "click",
+                "name": "A",
+                "until": {
+                  "kind": "present",
+                  "name": "B"
+                },
+                "retryEvery": 0
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "X"
+            }
+          },
+          {
+            "name": "hold-seconds",
+            "steps": [
+              {
+                "kind": "hold",
+                "name": "A",
+                "seconds": 0
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "X"
+            }
+          },
+          {
+            "name": "wait-seconds",
+            "steps": [
+              {
+                "kind": "wait",
+                "seconds": -1
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "X"
+            }
+          },
+          {
+            "name": "waitfor-timeout",
+            "steps": [
+              {
+                "kind": "waitFor",
+                "condition": {
+                  "kind": "present",
+                  "name": "B"
+                },
+                "timeout": 0.09
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "X"
+            }
+          },
+          {
+            "name": "cheatuntil-timeout",
+            "steps": [
+              {
+                "kind": "cheatUntil",
+                "command": "set Player.coins 5",
+                "until": {
+                  "kind": "present",
+                  "name": "B"
+                },
+                "timeout": 0
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "X"
+            }
+          },
+          {
+            "name": "cheatuntil-retry",
+            "steps": [
+              {
+                "kind": "cheatUntil",
+                "command": "set Player.coins 5",
+                "until": {
+                  "kind": "present",
+                  "name": "B"
+                },
+                "retryEvery": -1
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "X"
+            }
+          },
+          {
+            "name": "vision-timeout",
+            "steps": [
+              {
+                "kind": "vision",
+                "prompt": "is it open",
+                "timeout": 0
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "X"
+            }
+          },
+          {
+            "name": "settle-timeout",
+            "steps": [
+              {
+                "kind": "wait",
+                "seconds": 1
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "X"
+            },
+            "settleTimeoutSec": 0
+          },
+          {
+            "name": "arm-timeout",
+            "steps": [
+              {
+                "kind": "wait",
+                "seconds": 1
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "X"
+            },
+            "arm": {
+              "kind": "present",
+              "name": "B"
+            },
+            "armTimeoutSec": -1
+          }
+        ]
+      }
+    },
+    {
+      "name": "every field read as seconds, AT the floor, loads",
+      "$why": "the floor is taken: 0.1 in every seconds field at once",
+      "shots": [
+        "at-floor"
+      ],
+      "kitErrors": [],
+      "levers": [
+        "set Player.coins 5"
+      ],
+      "doc": {
+        "$schemaVersion": 1,
+        "shots": [
+          {
+            "name": "at-floor",
+            "arm": {
+              "kind": "present",
+              "name": "B"
+            },
+            "armTimeoutSec": 0.1,
+            "settleTimeoutSec": 0.1,
+            "steps": [
+              {
+                "kind": "click",
+                "name": "A",
+                "until": {
+                  "kind": "present",
+                  "name": "B"
+                },
+                "timeout": 0.1,
+                "retryEvery": 0.1
+              },
+              {
+                "kind": "hold",
+                "name": "A",
+                "seconds": 0.1
+              },
+              {
+                "kind": "wait",
+                "seconds": 0.1
+              },
+              {
+                "kind": "waitFor",
+                "condition": {
+                  "kind": "present",
+                  "name": "B"
+                },
+                "timeout": 0.1
+              },
+              {
+                "kind": "cheatUntil",
+                "command": "set Player.coins 5",
+                "until": {
+                  "kind": "present",
+                  "name": "B"
+                },
+                "timeout": 0.1,
+                "retryEvery": 0.1
+              },
+              {
+                "kind": "vision",
+                "prompt": "is it open",
+                "timeout": 0.1
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "X"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "a shot name over 80 characters is refused by its length, without the name (the twelfth audit, M1)",
+      "$why": "the loader repeated the name in every step's address; the site's cap, 80, is the kit's now, and the refusal does not repeat the name",
+      "shots": [
+        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      ],
+      "kitErrors": [
+        "shots[0]: the shot name is 81 characters long, and this kit takes names of at most 80"
+      ],
+      "levers": [],
+      "doc": {
+        "$schemaVersion": 1,
+        "shots": [
+          {
+            "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "steps": [
+              {
+                "kind": "wait",
+                "seconds": 1
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "X"
+            }
+          },
+          {
+            "name": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "steps": [
+              {
+                "kind": "wait",
+                "seconds": 1
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "X"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "a shot with more than 500 steps or 500 setup commands is refused by its count, before any step (the thirteenth audit, S1)",
+      "$why": "the lever cap counts DISTINCT commands, so 16,355 copies of one command froze the editor in one tick; the director yields after each command and step now, and these caps bound how many. Steps are counted first; at both caps the shot loads",
+      "shots": [
+        "at-caps"
+      ],
+      "kitErrors": [
+        "shots[0] ('many-steps'): the shot has 501 steps, and this kit takes at most 500",
+        "shots[1] ('many-setup'): the shot has 501 setup commands, and this kit takes at most 500",
+        "shots[2] ('both-over'): the shot has 501 steps, and this kit takes at most 500"
+      ],
+      "levers": [
+        "x"
+      ],
+      "text": "{\"$schemaVersion\":1,\"shots\":[{\"name\":\"many-steps\",\"steps\":[{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1}],\"settle\":{\"kind\":\"present\",\"name\":\"X\"}},{\"name\":\"many-setup\",\"setup\":[\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\"],\"steps\":[{\"kind\":\"wait\",\"seconds\":1}],\"settle\":{\"kind\":\"present\",\"name\":\"X\"}},{\"name\":\"both-over\",\"setup\":[\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\"],\"steps\":[{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1}],\"settle\":{\"kind\":\"present\",\"name\":\"X\"}},{\"name\":\"at-caps\",\"setup\":[\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\",\"x\"],\"steps\":[{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1},{\"kind\":\"wait\",\"seconds\":1}],\"settle\":{\"kind\":\"present\",\"name\":\"X\"}}]}"
+    },
+    {
+      "name": "a condition with more than 64 parts, counted over its whole tree, is refused at the condition (the thirteenth audit, S2)",
+      "$why": "one evaluation of a condition runs inside one editor tick and asks the UI about every part (2,255 parts: 1,984 ms on a 3,000-node canvas); nested alls count too (2 + 32 + 32 = 66); 64 loads, flat or nested (2 + 31 + 31)",
+      "shots": [
+        "at-cap"
+      ],
+      "kitErrors": [
+        "shots[0] ('flat').settle: the condition holds more than 64 parts, counting the parts of every 'all' inside it",
+        "shots[1] ('nested').settle: the condition holds more than 64 parts, counting the parts of every 'all' inside it",
+        "shots[2] ('waitfor').steps[0].condition: the condition holds more than 64 parts, counting the parts of every 'all' inside it"
+      ],
+      "levers": [],
+      "text": "{\"$schemaVersion\":1,\"shots\":[{\"name\":\"flat\",\"steps\":[{\"kind\":\"wait\",\"seconds\":1}],\"settle\":{\"kind\":\"all\",\"parts\":[{\"kind\":\"absent\",\"name\":\"N0\"},{\"kind\":\"absent\",\"name\":\"N1\"},{\"kind\":\"absent\",\"name\":\"N2\"},{\"kind\":\"absent\",\"name\":\"N3\"},{\"kind\":\"absent\",\"name\":\"N4\"},{\"kind\":\"absent\",\"name\":\"N5\"},{\"kind\":\"absent\",\"name\":\"N6\"},{\"kind\":\"absent\",\"name\":\"N7\"},{\"kind\":\"absent\",\"name\":\"N8\"},{\"kind\":\"absent\",\"name\":\"N9\"},{\"kind\":\"absent\",\"name\":\"N10\"},{\"kind\":\"absent\",\"name\":\"N11\"},{\"kind\":\"absent\",\"name\":\"N12\"},{\"kind\":\"absent\",\"name\":\"N13\"},{\"kind\":\"absent\",\"name\":\"N14\"},{\"kind\":\"absent\",\"name\":\"N15\"},{\"kind\":\"absent\",\"name\":\"N16\"},{\"kind\":\"absent\",\"name\":\"N17\"},{\"kind\":\"absent\",\"name\":\"N18\"},{\"kind\":\"absent\",\"name\":\"N19\"},{\"kind\":\"absent\",\"name\":\"N20\"},{\"kind\":\"absent\",\"name\":\"N21\"},{\"kind\":\"absent\",\"name\":\"N22\"},{\"kind\":\"absent\",\"name\":\"N23\"},{\"kind\":\"absent\",\"name\":\"N24\"},{\"kind\":\"absent\",\"name\":\"N25\"},{\"kind\":\"absent\",\"name\":\"N26\"},{\"kind\":\"absent\",\"name\":\"N27\"},{\"kind\":\"absent\",\"name\":\"N28\"},{\"kind\":\"absent\",\"name\":\"N29\"},{\"kind\":\"absent\",\"name\":\"N30\"},{\"kind\":\"absent\",\"name\":\"N31\"},{\"kind\":\"absent\",\"name\":\"N32\"},{\"kind\":\"absent\",\"name\":\"N33\"},{\"kind\":\"absent\",\"name\":\"N34\"},{\"kind\":\"absent\",\"name\":\"N35\"},{\"kind\":\"absent\",\"name\":\"N36\"},{\"kind\":\"absent\",\"name\":\"N37\"},{\"kind\":\"absent\",\"name\":\"N38\"},{\"kind\":\"absent\",\"name\":\"N39\"},{\"kind\":\"absent\",\"name\":\"N40\"},{\"kind\":\"absent\",\"name\":\"N41\"},{\"kind\":\"absent\",\"name\":\"N42\"},{\"kind\":\"absent\",\"name\":\"N43\"},{\"kind\":\"absent\",\"name\":\"N44\"},{\"kind\":\"absent\",\"name\":\"N45\"},{\"kind\":\"absent\",\"name\":\"N46\"},{\"kind\":\"absent\",\"name\":\"N47\"},{\"kind\":\"absent\",\"name\":\"N48\"},{\"kind\":\"absent\",\"name\":\"N49\"},{\"kind\":\"absent\",\"name\":\"N50\"},{\"kind\":\"absent\",\"name\":\"N51\"},{\"kind\":\"absent\",\"name\":\"N52\"},{\"kind\":\"absent\",\"name\":\"N53\"},{\"kind\":\"absent\",\"name\":\"N54\"},{\"kind\":\"absent\",\"name\":\"N55\"},{\"kind\":\"absent\",\"name\":\"N56\"},{\"kind\":\"absent\",\"name\":\"N57\"},{\"kind\":\"absent\",\"name\":\"N58\"},{\"kind\":\"absent\",\"name\":\"N59\"},{\"kind\":\"absent\",\"name\":\"N60\"},{\"kind\":\"absent\",\"name\":\"N61\"},{\"kind\":\"absent\",\"name\":\"N62\"},{\"kind\":\"absent\",\"name\":\"N63\"},{\"kind\":\"absent\",\"name\":\"N64\"}]}},{\"name\":\"nested\",\"steps\":[{\"kind\":\"wait\",\"seconds\":1}],\"settle\":{\"kind\":\"all\",\"parts\":[{\"kind\":\"all\",\"parts\":[{\"kind\":\"absent\",\"name\":\"a0\"},{\"kind\":\"absent\",\"name\":\"a1\"},{\"kind\":\"absent\",\"name\":\"a2\"},{\"kind\":\"absent\",\"name\":\"a3\"},{\"kind\":\"absent\",\"name\":\"a4\"},{\"kind\":\"absent\",\"name\":\"a5\"},{\"kind\":\"absent\",\"name\":\"a6\"},{\"kind\":\"absent\",\"name\":\"a7\"},{\"kind\":\"absent\",\"name\":\"a8\"},{\"kind\":\"absent\",\"name\":\"a9\"},{\"kind\":\"absent\",\"name\":\"a10\"},{\"kind\":\"absent\",\"name\":\"a11\"},{\"kind\":\"absent\",\"name\":\"a12\"},{\"kind\":\"absent\",\"name\":\"a13\"},{\"kind\":\"absent\",\"name\":\"a14\"},{\"kind\":\"absent\",\"name\":\"a15\"},{\"kind\":\"absent\",\"name\":\"a16\"},{\"kind\":\"absent\",\"name\":\"a17\"},{\"kind\":\"absent\",\"name\":\"a18\"},{\"kind\":\"absent\",\"name\":\"a19\"},{\"kind\":\"absent\",\"name\":\"a20\"},{\"kind\":\"absent\",\"name\":\"a21\"},{\"kind\":\"absent\",\"name\":\"a22\"},{\"kind\":\"absent\",\"name\":\"a23\"},{\"kind\":\"absent\",\"name\":\"a24\"},{\"kind\":\"absent\",\"name\":\"a25\"},{\"kind\":\"absent\",\"name\":\"a26\"},{\"kind\":\"absent\",\"name\":\"a27\"},{\"kind\":\"absent\",\"name\":\"a28\"},{\"kind\":\"absent\",\"name\":\"a29\"},{\"kind\":\"absent\",\"name\":\"a30\"},{\"kind\":\"absent\",\"name\":\"a31\"}]},{\"kind\":\"all\",\"parts\":[{\"kind\":\"absent\",\"name\":\"b0\"},{\"kind\":\"absent\",\"name\":\"b1\"},{\"kind\":\"absent\",\"name\":\"b2\"},{\"kind\":\"absent\",\"name\":\"b3\"},{\"kind\":\"absent\",\"name\":\"b4\"},{\"kind\":\"absent\",\"name\":\"b5\"},{\"kind\":\"absent\",\"name\":\"b6\"},{\"kind\":\"absent\",\"name\":\"b7\"},{\"kind\":\"absent\",\"name\":\"b8\"},{\"kind\":\"absent\",\"name\":\"b9\"},{\"kind\":\"absent\",\"name\":\"b10\"},{\"kind\":\"absent\",\"name\":\"b11\"},{\"kind\":\"absent\",\"name\":\"b12\"},{\"kind\":\"absent\",\"name\":\"b13\"},{\"kind\":\"absent\",\"name\":\"b14\"},{\"kind\":\"absent\",\"name\":\"b15\"},{\"kind\":\"absent\",\"name\":\"b16\"},{\"kind\":\"absent\",\"name\":\"b17\"},{\"kind\":\"absent\",\"name\":\"b18\"},{\"kind\":\"absent\",\"name\":\"b19\"},{\"kind\":\"absent\",\"name\":\"b20\"},{\"kind\":\"absent\",\"name\":\"b21\"},{\"kind\":\"absent\",\"name\":\"b22\"},{\"kind\":\"absent\",\"name\":\"b23\"},{\"kind\":\"absent\",\"name\":\"b24\"},{\"kind\":\"absent\",\"name\":\"b25\"},{\"kind\":\"absent\",\"name\":\"b26\"},{\"kind\":\"absent\",\"name\":\"b27\"},{\"kind\":\"absent\",\"name\":\"b28\"},{\"kind\":\"absent\",\"name\":\"b29\"},{\"kind\":\"absent\",\"name\":\"b30\"},{\"kind\":\"absent\",\"name\":\"b31\"}]}]}},{\"name\":\"waitfor\",\"steps\":[{\"kind\":\"waitFor\",\"condition\":{\"kind\":\"all\",\"parts\":[{\"kind\":\"absent\",\"name\":\"N0\"},{\"kind\":\"absent\",\"name\":\"N1\"},{\"kind\":\"absent\",\"name\":\"N2\"},{\"kind\":\"absent\",\"name\":\"N3\"},{\"kind\":\"absent\",\"name\":\"N4\"},{\"kind\":\"absent\",\"name\":\"N5\"},{\"kind\":\"absent\",\"name\":\"N6\"},{\"kind\":\"absent\",\"name\":\"N7\"},{\"kind\":\"absent\",\"name\":\"N8\"},{\"kind\":\"absent\",\"name\":\"N9\"},{\"kind\":\"absent\",\"name\":\"N10\"},{\"kind\":\"absent\",\"name\":\"N11\"},{\"kind\":\"absent\",\"name\":\"N12\"},{\"kind\":\"absent\",\"name\":\"N13\"},{\"kind\":\"absent\",\"name\":\"N14\"},{\"kind\":\"absent\",\"name\":\"N15\"},{\"kind\":\"absent\",\"name\":\"N16\"},{\"kind\":\"absent\",\"name\":\"N17\"},{\"kind\":\"absent\",\"name\":\"N18\"},{\"kind\":\"absent\",\"name\":\"N19\"},{\"kind\":\"absent\",\"name\":\"N20\"},{\"kind\":\"absent\",\"name\":\"N21\"},{\"kind\":\"absent\",\"name\":\"N22\"},{\"kind\":\"absent\",\"name\":\"N23\"},{\"kind\":\"absent\",\"name\":\"N24\"},{\"kind\":\"absent\",\"name\":\"N25\"},{\"kind\":\"absent\",\"name\":\"N26\"},{\"kind\":\"absent\",\"name\":\"N27\"},{\"kind\":\"absent\",\"name\":\"N28\"},{\"kind\":\"absent\",\"name\":\"N29\"},{\"kind\":\"absent\",\"name\":\"N30\"},{\"kind\":\"absent\",\"name\":\"N31\"},{\"kind\":\"absent\",\"name\":\"N32\"},{\"kind\":\"absent\",\"name\":\"N33\"},{\"kind\":\"absent\",\"name\":\"N34\"},{\"kind\":\"absent\",\"name\":\"N35\"},{\"kind\":\"absent\",\"name\":\"N36\"},{\"kind\":\"absent\",\"name\":\"N37\"},{\"kind\":\"absent\",\"name\":\"N38\"},{\"kind\":\"absent\",\"name\":\"N39\"},{\"kind\":\"absent\",\"name\":\"N40\"},{\"kind\":\"absent\",\"name\":\"N41\"},{\"kind\":\"absent\",\"name\":\"N42\"},{\"kind\":\"absent\",\"name\":\"N43\"},{\"kind\":\"absent\",\"name\":\"N44\"},{\"kind\":\"absent\",\"name\":\"N45\"},{\"kind\":\"absent\",\"name\":\"N46\"},{\"kind\":\"absent\",\"name\":\"N47\"},{\"kind\":\"absent\",\"name\":\"N48\"},{\"kind\":\"absent\",\"name\":\"N49\"},{\"kind\":\"absent\",\"name\":\"N50\"},{\"kind\":\"absent\",\"name\":\"N51\"},{\"kind\":\"absent\",\"name\":\"N52\"},{\"kind\":\"absent\",\"name\":\"N53\"},{\"kind\":\"absent\",\"name\":\"N54\"},{\"kind\":\"absent\",\"name\":\"N55\"},{\"kind\":\"absent\",\"name\":\"N56\"},{\"kind\":\"absent\",\"name\":\"N57\"},{\"kind\":\"absent\",\"name\":\"N58\"},{\"kind\":\"absent\",\"name\":\"N59\"},{\"kind\":\"absent\",\"name\":\"N60\"},{\"kind\":\"absent\",\"name\":\"N61\"},{\"kind\":\"absent\",\"name\":\"N62\"},{\"kind\":\"absent\",\"name\":\"N63\"},{\"kind\":\"absent\",\"name\":\"N64\"}]}}],\"settle\":{\"kind\":\"present\",\"name\":\"X\"}},{\"name\":\"at-cap\",\"steps\":[{\"kind\":\"waitFor\",\"condition\":{\"kind\":\"all\",\"parts\":[{\"kind\":\"all\",\"parts\":[{\"kind\":\"absent\",\"name\":\"a0\"},{\"kind\":\"absent\",\"name\":\"a1\"},{\"kind\":\"absent\",\"name\":\"a2\"},{\"kind\":\"absent\",\"name\":\"a3\"},{\"kind\":\"absent\",\"name\":\"a4\"},{\"kind\":\"absent\",\"name\":\"a5\"},{\"kind\":\"absent\",\"name\":\"a6\"},{\"kind\":\"absent\",\"name\":\"a7\"},{\"kind\":\"absent\",\"name\":\"a8\"},{\"kind\":\"absent\",\"name\":\"a9\"},{\"kind\":\"absent\",\"name\":\"a10\"},{\"kind\":\"absent\",\"name\":\"a11\"},{\"kind\":\"absent\",\"name\":\"a12\"},{\"kind\":\"absent\",\"name\":\"a13\"},{\"kind\":\"absent\",\"name\":\"a14\"},{\"kind\":\"absent\",\"name\":\"a15\"},{\"kind\":\"absent\",\"name\":\"a16\"},{\"kind\":\"absent\",\"name\":\"a17\"},{\"kind\":\"absent\",\"name\":\"a18\"},{\"kind\":\"absent\",\"name\":\"a19\"},{\"kind\":\"absent\",\"name\":\"a20\"},{\"kind\":\"absent\",\"name\":\"a21\"},{\"kind\":\"absent\",\"name\":\"a22\"},{\"kind\":\"absent\",\"name\":\"a23\"},{\"kind\":\"absent\",\"name\":\"a24\"},{\"kind\":\"absent\",\"name\":\"a25\"},{\"kind\":\"absent\",\"name\":\"a26\"},{\"kind\":\"absent\",\"name\":\"a27\"},{\"kind\":\"absent\",\"name\":\"a28\"},{\"kind\":\"absent\",\"name\":\"a29\"},{\"kind\":\"absent\",\"name\":\"a30\"}]},{\"kind\":\"all\",\"parts\":[{\"kind\":\"absent\",\"name\":\"b0\"},{\"kind\":\"absent\",\"name\":\"b1\"},{\"kind\":\"absent\",\"name\":\"b2\"},{\"kind\":\"absent\",\"name\":\"b3\"},{\"kind\":\"absent\",\"name\":\"b4\"},{\"kind\":\"absent\",\"name\":\"b5\"},{\"kind\":\"absent\",\"name\":\"b6\"},{\"kind\":\"absent\",\"name\":\"b7\"},{\"kind\":\"absent\",\"name\":\"b8\"},{\"kind\":\"absent\",\"name\":\"b9\"},{\"kind\":\"absent\",\"name\":\"b10\"},{\"kind\":\"absent\",\"name\":\"b11\"},{\"kind\":\"absent\",\"name\":\"b12\"},{\"kind\":\"absent\",\"name\":\"b13\"},{\"kind\":\"absent\",\"name\":\"b14\"},{\"kind\":\"absent\",\"name\":\"b15\"},{\"kind\":\"absent\",\"name\":\"b16\"},{\"kind\":\"absent\",\"name\":\"b17\"},{\"kind\":\"absent\",\"name\":\"b18\"},{\"kind\":\"absent\",\"name\":\"b19\"},{\"kind\":\"absent\",\"name\":\"b20\"},{\"kind\":\"absent\",\"name\":\"b21\"},{\"kind\":\"absent\",\"name\":\"b22\"},{\"kind\":\"absent\",\"name\":\"b23\"},{\"kind\":\"absent\",\"name\":\"b24\"},{\"kind\":\"absent\",\"name\":\"b25\"},{\"kind\":\"absent\",\"name\":\"b26\"},{\"kind\":\"absent\",\"name\":\"b27\"},{\"kind\":\"absent\",\"name\":\"b28\"},{\"kind\":\"absent\",\"name\":\"b29\"},{\"kind\":\"absent\",\"name\":\"b30\"}]}]}}],\"settle\":{\"kind\":\"all\",\"parts\":[{\"kind\":\"absent\",\"name\":\"N0\"},{\"kind\":\"absent\",\"name\":\"N1\"},{\"kind\":\"absent\",\"name\":\"N2\"},{\"kind\":\"absent\",\"name\":\"N3\"},{\"kind\":\"absent\",\"name\":\"N4\"},{\"kind\":\"absent\",\"name\":\"N5\"},{\"kind\":\"absent\",\"name\":\"N6\"},{\"kind\":\"absent\",\"name\":\"N7\"},{\"kind\":\"absent\",\"name\":\"N8\"},{\"kind\":\"absent\",\"name\":\"N9\"},{\"kind\":\"absent\",\"name\":\"N10\"},{\"kind\":\"absent\",\"name\":\"N11\"},{\"kind\":\"absent\",\"name\":\"N12\"},{\"kind\":\"absent\",\"name\":\"N13\"},{\"kind\":\"absent\",\"name\":\"N14\"},{\"kind\":\"absent\",\"name\":\"N15\"},{\"kind\":\"absent\",\"name\":\"N16\"},{\"kind\":\"absent\",\"name\":\"N17\"},{\"kind\":\"absent\",\"name\":\"N18\"},{\"kind\":\"absent\",\"name\":\"N19\"},{\"kind\":\"absent\",\"name\":\"N20\"},{\"kind\":\"absent\",\"name\":\"N21\"},{\"kind\":\"absent\",\"name\":\"N22\"},{\"kind\":\"absent\",\"name\":\"N23\"},{\"kind\":\"absent\",\"name\":\"N24\"},{\"kind\":\"absent\",\"name\":\"N25\"},{\"kind\":\"absent\",\"name\":\"N26\"},{\"kind\":\"absent\",\"name\":\"N27\"},{\"kind\":\"absent\",\"name\":\"N28\"},{\"kind\":\"absent\",\"name\":\"N29\"},{\"kind\":\"absent\",\"name\":\"N30\"},{\"kind\":\"absent\",\"name\":\"N31\"},{\"kind\":\"absent\",\"name\":\"N32\"},{\"kind\":\"absent\",\"name\":\"N33\"},{\"kind\":\"absent\",\"name\":\"N34\"},{\"kind\":\"absent\",\"name\":\"N35\"},{\"kind\":\"absent\",\"name\":\"N36\"},{\"kind\":\"absent\",\"name\":\"N37\"},{\"kind\":\"absent\",\"name\":\"N38\"},{\"kind\":\"absent\",\"name\":\"N39\"},{\"kind\":\"absent\",\"name\":\"N40\"},{\"kind\":\"absent\",\"name\":\"N41\"},{\"kind\":\"absent\",\"name\":\"N42\"},{\"kind\":\"absent\",\"name\":\"N43\"},{\"kind\":\"absent\",\"name\":\"N44\"},{\"kind\":\"absent\",\"name\":\"N45\"},{\"kind\":\"absent\",\"name\":\"N46\"},{\"kind\":\"absent\",\"name\":\"N47\"},{\"kind\":\"absent\",\"name\":\"N48\"},{\"kind\":\"absent\",\"name\":\"N49\"},{\"kind\":\"absent\",\"name\":\"N50\"},{\"kind\":\"absent\",\"name\":\"N51\"},{\"kind\":\"absent\",\"name\":\"N52\"},{\"kind\":\"absent\",\"name\":\"N53\"},{\"kind\":\"absent\",\"name\":\"N54\"},{\"kind\":\"absent\",\"name\":\"N55\"},{\"kind\":\"absent\",\"name\":\"N56\"},{\"kind\":\"absent\",\"name\":\"N57\"},{\"kind\":\"absent\",\"name\":\"N58\"},{\"kind\":\"absent\",\"name\":\"N59\"},{\"kind\":\"absent\",\"name\":\"N60\"},{\"kind\":\"absent\",\"name\":\"N61\"},{\"kind\":\"absent\",\"name\":\"N62\"},{\"kind\":\"absent\",\"name\":\"N63\"}]}}]}"
+    },
+    {
+      "name": "every field read as seconds, above the ceiling, is refused by name (the thirteenth audit, M2)",
+      "$why": "a wait of 1e300 s never ended, and the capture agent waited on the director for ever: every field the loader reads as seconds is at most 600 (just over it, 601 and 1e300, one field per shot)",
+      "shots": [],
+      "kitErrors": [
+        "shots[0] ('click-timeout').steps[0]: 'timeout' must be at most 600 seconds",
+        "shots[1] ('click-retry').steps[0]: 'retryEvery' must be at most 600 seconds",
+        "shots[2] ('hold-seconds').steps[0]: 'seconds' must be at most 600 seconds",
+        "shots[3] ('wait-seconds').steps[0]: 'seconds' must be at most 600 seconds",
+        "shots[4] ('waitfor-timeout').steps[0]: 'timeout' must be at most 600 seconds",
+        "shots[5] ('cheatuntil-timeout').steps[0]: 'timeout' must be at most 600 seconds",
+        "shots[6] ('cheatuntil-retry').steps[0]: 'retryEvery' must be at most 600 seconds",
+        "shots[7] ('vision-timeout').steps[0]: 'timeout' must be at most 600 seconds",
+        "shots[8] ('settle-timeout'): 'settleTimeoutSec' must be at most 600 seconds",
+        "shots[9] ('arm-timeout'): 'armTimeoutSec' must be at most 600 seconds"
+      ],
+      "levers": [
+        "set Player.coins 5"
+      ],
+      "doc": {
+        "$schemaVersion": 1,
+        "shots": [
+          {
+            "name": "click-timeout",
+            "steps": [
+              {
+                "kind": "click",
+                "name": "A",
+                "timeout": 600.001
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "X"
+            }
+          },
+          {
+            "name": "click-retry",
+            "steps": [
+              {
+                "kind": "click",
+                "name": "A",
+                "until": {
+                  "kind": "present",
+                  "name": "B"
+                },
+                "retryEvery": 601
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "X"
+            }
+          },
+          {
+            "name": "hold-seconds",
+            "steps": [
+              {
+                "kind": "hold",
+                "name": "A",
+                "seconds": 601
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "X"
+            }
+          },
+          {
+            "name": "wait-seconds",
+            "steps": [
+              {
+                "kind": "wait",
+                "seconds": 1e+300
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "X"
+            }
+          },
+          {
+            "name": "waitfor-timeout",
+            "steps": [
+              {
+                "kind": "waitFor",
+                "condition": {
+                  "kind": "present",
+                  "name": "B"
+                },
+                "timeout": 601
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "X"
+            }
+          },
+          {
+            "name": "cheatuntil-timeout",
+            "steps": [
+              {
+                "kind": "cheatUntil",
+                "command": "set Player.coins 5",
+                "until": {
+                  "kind": "present",
+                  "name": "B"
+                },
+                "timeout": 601
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "X"
+            }
+          },
+          {
+            "name": "cheatuntil-retry",
+            "steps": [
+              {
+                "kind": "cheatUntil",
+                "command": "set Player.coins 5",
+                "until": {
+                  "kind": "present",
+                  "name": "B"
+                },
+                "retryEvery": 601
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "X"
+            }
+          },
+          {
+            "name": "vision-timeout",
+            "steps": [
+              {
+                "kind": "vision",
+                "prompt": "is it open",
+                "timeout": 601
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "X"
+            }
+          },
+          {
+            "name": "settle-timeout",
+            "steps": [
+              {
+                "kind": "wait",
+                "seconds": 1
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "X"
+            },
+            "settleTimeoutSec": 601
+          },
+          {
+            "name": "arm-timeout",
+            "steps": [
+              {
+                "kind": "wait",
+                "seconds": 1
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "X"
+            },
+            "arm": {
+              "kind": "present",
+              "name": "B"
+            },
+            "armTimeoutSec": 601
+          }
+        ]
+      }
+    },
+    {
+      "name": "every field read as seconds, AT the ceiling, loads",
+      "$why": "the ceiling is taken: 600 in every seconds field at once",
+      "shots": [
+        "at-ceiling"
+      ],
+      "kitErrors": [],
+      "levers": [
+        "set Player.coins 5"
+      ],
+      "doc": {
+        "$schemaVersion": 1,
+        "shots": [
+          {
+            "name": "at-ceiling",
+            "arm": {
+              "kind": "present",
+              "name": "B"
+            },
+            "armTimeoutSec": 600,
+            "settleTimeoutSec": 600,
+            "steps": [
+              {
+                "kind": "click",
+                "name": "A",
+                "until": {
+                  "kind": "present",
+                  "name": "B"
+                },
+                "timeout": 600,
+                "retryEvery": 600
+              },
+              {
+                "kind": "hold",
+                "name": "A",
+                "seconds": 600
+              },
+              {
+                "kind": "wait",
+                "seconds": 600
+              },
+              {
+                "kind": "waitFor",
+                "condition": {
+                  "kind": "present",
+                  "name": "B"
+                },
+                "timeout": 600
+              },
+              {
+                "kind": "cheatUntil",
+                "command": "set Player.coins 5",
+                "until": {
+                  "kind": "present",
+                  "name": "B"
+                },
+                "timeout": 600,
+                "retryEvery": 600
+              },
+              {
+                "kind": "vision",
+                "prompt": "is it open",
+                "timeout": 600
+              }
+            ],
+            "settle": {
+              "kind": "present",
+              "name": "X"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

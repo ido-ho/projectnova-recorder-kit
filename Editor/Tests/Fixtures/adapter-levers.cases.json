@@ -1,0 +1,15 @@
+{
+  "note": "adapter.json -> the write levers it needs. Run by BOTH the kit (C#) and the website's lint (TS). Compared as ordinally sorted sets.",
+  "cases": [
+    { "name": "only a game id", "adapter": { "gameId": "g" }, "levers": [] },
+    { "name": "overlays are one lever per type", "adapter": { "gameId": "g", "overlayTypeNames": ["Hud", "Toast"] }, "levers": ["hide-overlay Hud", "hide-overlay Toast"] },
+    { "name": "the ready block's writes, and its read as the command it sends, 'get <muteGet>' (the fourteenth audit: a get runs a property getter, which is code)", "adapter": { "gameId": "g", "ready": { "mute": "call Audio.Mute", "muteGet": "Audio.Muted", "resistOn": "set Net.Resist true", "resistOff": "set Net.Resist false" } }, "levers": ["call Audio.Mute", "get Audio.Muted", "set Net.Resist false", "set Net.Resist true"] },
+    { "name": "muteGet alone is one lever, prefix and all, written exactly", "adapter": { "gameId": "g", "ready": { "muteGet": "Audio .Muted" } }, "levers": ["get Audio .Muted"] },
+    { "name": "an empty camera block needs nothing", "adapter": { "gameId": "g", "camera": {} }, "levers": [] },
+    { "name": "the defaults spelled out need nothing", "adapter": { "gameId": "g", "camera": { "setPosition": "SetPosition", "setRotation": "SetRotation", "setFov": "SetFov", "projection": "orthographic" } }, "levers": [] },
+    { "name": "a view type is a lever", "adapter": { "gameId": "g", "camera": { "viewType": "BoardCameraRig" } }, "levers": ["camera-spec BoardCameraRig SetPosition SetRotation SetFov"] },
+    { "name": "a method name is a lever", "adapter": { "gameId": "g", "camera": { "setRotation": "DeleteSave" } }, "levers": ["camera-spec * SetPosition DeleteSave SetFov"] },
+    { "name": "values are trimmed", "adapter": { "gameId": "g", "camera": { "viewType": "  Rig  ", "setPosition": " Move " } }, "levers": ["camera-spec Rig Move SetRotation SetFov"] },
+    { "name": "everything at once", "adapter": { "gameId": "g", "overlayTypeNames": ["Hud"], "ready": { "mute": "call Audio.Mute" }, "camera": { "viewType": "Rig" } }, "levers": ["call Audio.Mute", "camera-spec Rig SetPosition SetRotation SetFov", "hide-overlay Hud"] }
+  ]
+}
