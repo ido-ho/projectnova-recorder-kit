@@ -1,0 +1,3230 @@
+{
+  "$comment": "v3 P4 — ONE set of cases the kit (TeachAnalysis, RecipeFile) and the server (apps/renderer/src/game-ads/learn/recipes.ts: analyseTeach, RecipesFileSchema) must agree on. analysis[]: a teach's presses as the recorder writes them, the export names the server sent (authored), the confirming replay's facts (or null) and the declared start -> the goal presses (indices), the dismiss names, the arrival, confirmed or not and a phrase of the reason. Both suites read this file; a drift is a teach the kit calls confirmed that the server does not. documents[]: learn/recipes.json documents both readers (the kit's RecipeFile.Read and the server's RecipesFileSchema) must read (ok) or refuse whole.",
+  "analysis": [
+    {
+      "name": "a popup close is a dismiss; the press that opens a new root is the goal; one replay arrives the same way",
+      "authored": [
+        "Lobby",
+        "Offer",
+        "Close",
+        "Equip",
+        "Equipment",
+        "EqGrid",
+        "EqBack"
+      ],
+      "declaredStart": {
+        "kind": "lobby-after-boot"
+      },
+      "presses": [
+        {
+          "fired": "click",
+          "selector": "Close",
+          "pressRoot": "Ui/Offer",
+          "shared": false,
+          "before": {
+            "roots": [
+              "Ui/Lobby",
+              "Ui/Offer"
+            ]
+          },
+          "after": {
+            "roots": [
+              "Ui/Lobby"
+            ],
+            "added": [],
+            "buttons": [
+              "Equip"
+            ]
+          }
+        },
+        {
+          "fired": "click",
+          "selector": "Equip",
+          "pressRoot": "Ui/Lobby",
+          "shared": false,
+          "element": {
+            "name": "Equip",
+            "label": "Equipment",
+            "handler": null
+          },
+          "before": {
+            "roots": [
+              "Ui/Lobby"
+            ]
+          },
+          "after": {
+            "roots": [
+              "Ui/Equipment",
+              "Ui/Lobby"
+            ],
+            "added": [
+              "EqBack",
+              "EqGrid",
+              "Equipment",
+              "TweenFx(Clone)"
+            ],
+            "buttons": [
+              "EqBack"
+            ]
+          }
+        }
+      ],
+      "replay": {
+        "ran": true,
+        "why": null,
+        "dismissed": [
+          "Close"
+        ],
+        "steps": [
+          {
+            "pressed": true,
+            "refused": null,
+            "rebound": null,
+            "after": {
+              "roots": [
+                "Ui/Equipment",
+                "Ui/Lobby"
+              ],
+              "added": [
+                "EqBack",
+                "EqGrid",
+                "Equipment"
+              ]
+            }
+          }
+        ]
+      },
+      "expect": {
+        "goal": [
+          1
+        ],
+        "dismiss": [
+          "Close"
+        ],
+        "teachArrival": [
+          "EqBack",
+          "EqGrid",
+          "Equipment"
+        ],
+        "arrival": [
+          "EqBack",
+          "EqGrid",
+          "Equipment"
+        ],
+        "confirmed": true,
+        "why": null,
+        "steps": [
+          {
+            "kind": "click",
+            "name": "Equip",
+            "element": {
+              "name": "Equip",
+              "label": "Equipment",
+              "handler": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "a press that removes its own root AND opens a new one is navigation — a goal, never a dismiss",
+      "authored": [
+        "Lobby",
+        "Equip",
+        "Equipment",
+        "EqGrid",
+        "EqBack"
+      ],
+      "declaredStart": {
+        "kind": "lobby-after-boot"
+      },
+      "presses": [
+        {
+          "fired": "click",
+          "selector": "Equip",
+          "pressRoot": "Ui/Lobby",
+          "shared": false,
+          "before": {
+            "roots": [
+              "Ui/Lobby"
+            ]
+          },
+          "after": {
+            "roots": [
+              "Ui/Equipment"
+            ],
+            "added": [
+              "EqBack",
+              "EqGrid",
+              "Equipment"
+            ],
+            "buttons": []
+          }
+        }
+      ],
+      "replay": {
+        "ran": true,
+        "why": null,
+        "dismissed": [],
+        "steps": [
+          {
+            "pressed": true,
+            "refused": null,
+            "rebound": null,
+            "after": {
+              "roots": [
+                "Ui/Equipment"
+              ],
+              "added": [
+                "EqBack",
+                "EqGrid",
+                "Equipment"
+              ]
+            }
+          }
+        ]
+      },
+      "expect": {
+        "goal": [
+          0
+        ],
+        "dismiss": [],
+        "teachArrival": [
+          "EqBack",
+          "EqGrid",
+          "Equipment"
+        ],
+        "arrival": [
+          "EqBack",
+          "EqGrid",
+          "Equipment"
+        ],
+        "confirmed": true,
+        "why": null
+      }
+    },
+    {
+      "name": "a tab inside one screen changes no root — kept as a goal step",
+      "authored": [
+        "Shop",
+        "TabGems",
+        "GemsList",
+        "GemRow"
+      ],
+      "declaredStart": {
+        "kind": "lobby-after-boot"
+      },
+      "presses": [
+        {
+          "fired": "click",
+          "selector": "TabGems",
+          "pressRoot": "Ui/Shop",
+          "shared": false,
+          "before": {
+            "roots": [
+              "Ui/Shop"
+            ]
+          },
+          "after": {
+            "roots": [
+              "Ui/Shop"
+            ],
+            "added": [
+              "GemRow",
+              "GemsList"
+            ],
+            "buttons": []
+          }
+        }
+      ],
+      "replay": {
+        "ran": true,
+        "why": null,
+        "dismissed": [],
+        "steps": [
+          {
+            "pressed": true,
+            "refused": null,
+            "rebound": null,
+            "after": {
+              "roots": [
+                "Ui/Shop"
+              ],
+              "added": [
+                "GemRow",
+                "GemsList"
+              ]
+            }
+          }
+        ]
+      },
+      "expect": {
+        "goal": [
+          0
+        ],
+        "dismiss": [],
+        "teachArrival": [
+          "GemRow",
+          "GemsList"
+        ],
+        "arrival": [
+          "GemRow",
+          "GemsList"
+        ],
+        "confirmed": true,
+        "why": null
+      }
+    },
+    {
+      "name": "a dismiss AFTER the last goal press does not move the arrival baseline",
+      "authored": [
+        "Lobby",
+        "Equip",
+        "Equipment",
+        "EqGrid",
+        "EqBack",
+        "Rating",
+        "Later"
+      ],
+      "declaredStart": {
+        "kind": "lobby-after-boot"
+      },
+      "presses": [
+        {
+          "fired": "click",
+          "selector": "Equip",
+          "pressRoot": "Ui/Lobby",
+          "shared": false,
+          "before": {
+            "roots": [
+              "Ui/Lobby"
+            ]
+          },
+          "after": {
+            "roots": [
+              "Ui/Equipment",
+              "Ui/Lobby",
+              "Ui/Rating"
+            ],
+            "added": [
+              "EqBack",
+              "EqGrid",
+              "Equipment",
+              "Later",
+              "Rating"
+            ],
+            "buttons": []
+          }
+        },
+        {
+          "fired": "click",
+          "selector": "Later",
+          "pressRoot": "Ui/Rating",
+          "shared": false,
+          "before": {
+            "roots": [
+              "Ui/Equipment",
+              "Ui/Lobby",
+              "Ui/Rating"
+            ]
+          },
+          "after": {
+            "roots": [
+              "Ui/Equipment",
+              "Ui/Lobby"
+            ],
+            "added": [],
+            "buttons": []
+          }
+        }
+      ],
+      "replay": {
+        "ran": true,
+        "why": null,
+        "dismissed": [],
+        "steps": [
+          {
+            "pressed": true,
+            "refused": null,
+            "rebound": null,
+            "after": {
+              "roots": [
+                "Ui/Equipment",
+                "Ui/Lobby"
+              ],
+              "added": [
+                "EqBack",
+                "EqGrid",
+                "Equipment"
+              ]
+            }
+          }
+        ]
+      },
+      "expect": {
+        "goal": [
+          0
+        ],
+        "dismiss": [
+          "Later"
+        ],
+        "teachArrival": [
+          "EqBack",
+          "EqGrid",
+          "Equipment",
+          "Later",
+          "Rating"
+        ],
+        "arrival": [
+          "EqBack",
+          "EqGrid",
+          "Equipment"
+        ],
+        "confirmed": true,
+        "why": null
+      }
+    },
+    {
+      "name": "a runtime clone, a tween and a tooltip are not in the export and never count toward arrival",
+      "authored": [
+        "Lobby",
+        "Equip",
+        "Equipment"
+      ],
+      "declaredStart": {
+        "kind": "lobby-after-boot"
+      },
+      "presses": [
+        {
+          "fired": "click",
+          "selector": "Equip",
+          "pressRoot": "Ui/Lobby",
+          "shared": false,
+          "before": {
+            "roots": [
+              "Ui/Lobby"
+            ]
+          },
+          "after": {
+            "roots": [
+              "Ui/Equipment",
+              "Ui/Lobby"
+            ],
+            "added": [
+              "Equipment",
+              "ItemCell(Clone)",
+              "Tooltip",
+              "TweenFx"
+            ],
+            "buttons": []
+          }
+        }
+      ],
+      "replay": {
+        "ran": true,
+        "why": null,
+        "dismissed": [],
+        "steps": [
+          {
+            "pressed": true,
+            "refused": null,
+            "rebound": null,
+            "after": {
+              "roots": [
+                "Ui/Equipment",
+                "Ui/Lobby"
+              ],
+              "added": [
+                "Equipment",
+                "ItemCell(Clone)",
+                "Tooltip",
+                "TweenFx"
+              ]
+            }
+          }
+        ]
+      },
+      "expect": {
+        "goal": [
+          0
+        ],
+        "dismiss": [],
+        "teachArrival": [
+          "Equipment"
+        ],
+        "arrival": [
+          "Equipment"
+        ],
+        "confirmed": false,
+        "why": "only 1 name(s) from the game's own files appeared"
+      }
+    },
+    {
+      "name": "names seen in only ONE observation never confirm — the replay reached another screen",
+      "authored": [
+        "Lobby",
+        "Equip",
+        "Equipment",
+        "EqGrid",
+        "EqBack",
+        "Skills",
+        "SkTree"
+      ],
+      "declaredStart": {
+        "kind": "lobby-after-boot"
+      },
+      "presses": [
+        {
+          "fired": "click",
+          "selector": "Equip",
+          "pressRoot": "Ui/Lobby",
+          "shared": false,
+          "before": {
+            "roots": [
+              "Ui/Lobby"
+            ]
+          },
+          "after": {
+            "roots": [
+              "Ui/Equipment",
+              "Ui/Lobby"
+            ],
+            "added": [
+              "EqBack",
+              "EqGrid",
+              "Equipment"
+            ],
+            "buttons": []
+          }
+        }
+      ],
+      "replay": {
+        "ran": true,
+        "why": null,
+        "dismissed": [],
+        "steps": [
+          {
+            "pressed": true,
+            "refused": null,
+            "rebound": null,
+            "after": {
+              "roots": [
+                "Ui/Lobby",
+                "Ui/Skills"
+              ],
+              "added": [
+                "EqBack",
+                "SkTree",
+                "Skills"
+              ]
+            }
+          }
+        ]
+      },
+      "expect": {
+        "goal": [
+          0
+        ],
+        "dismiss": [],
+        "teachArrival": [
+          "EqBack",
+          "EqGrid",
+          "Equipment"
+        ],
+        "arrival": [
+          "EqBack",
+          "EqGrid",
+          "Equipment"
+        ],
+        "confirmed": false,
+        "why": "did not arrive the same way: 1 of the 3"
+      }
+    },
+    {
+      "name": "no replay ran — unconfirmed, never assumed",
+      "authored": [
+        "Lobby",
+        "Equip",
+        "Equipment",
+        "EqGrid"
+      ],
+      "declaredStart": {
+        "kind": "lobby-after-boot"
+      },
+      "presses": [
+        {
+          "fired": "click",
+          "selector": "Equip",
+          "pressRoot": "Ui/Lobby",
+          "shared": false,
+          "before": {
+            "roots": [
+              "Ui/Lobby"
+            ]
+          },
+          "after": {
+            "roots": [
+              "Ui/Equipment",
+              "Ui/Lobby"
+            ],
+            "added": [
+              "EqGrid",
+              "Equipment"
+            ],
+            "buttons": []
+          }
+        }
+      ],
+      "replay": {
+        "ran": false,
+        "why": "the game stayed on its loading screen",
+        "dismissed": [],
+        "steps": []
+      },
+      "expect": {
+        "goal": [
+          0
+        ],
+        "dismiss": [],
+        "teachArrival": [
+          "EqGrid",
+          "Equipment"
+        ],
+        "arrival": [
+          "EqGrid",
+          "Equipment"
+        ],
+        "confirmed": false,
+        "why": "the confirming replay did not run: the game stayed on its loading screen"
+      }
+    },
+    {
+      "name": "a replay whose press was refused does not confirm, and says why",
+      "authored": [
+        "Lobby",
+        "Equip",
+        "Equipment",
+        "EqGrid"
+      ],
+      "declaredStart": {
+        "kind": "lobby-after-boot"
+      },
+      "presses": [
+        {
+          "fired": "click",
+          "selector": "Equip",
+          "pressRoot": "Ui/Lobby",
+          "shared": false,
+          "before": {
+            "roots": [
+              "Ui/Lobby"
+            ]
+          },
+          "after": {
+            "roots": [
+              "Ui/Equipment",
+              "Ui/Lobby"
+            ],
+            "added": [
+              "EqGrid",
+              "Equipment"
+            ],
+            "buttons": []
+          }
+        }
+      ],
+      "replay": {
+        "ran": true,
+        "why": null,
+        "dismissed": [],
+        "steps": [
+          {
+            "pressed": false,
+            "refused": "the element is gone and no candidate is on the allowed names",
+            "rebound": null,
+            "after": null
+          }
+        ]
+      },
+      "expect": {
+        "goal": [
+          0
+        ],
+        "dismiss": [],
+        "teachArrival": [
+          "EqGrid",
+          "Equipment"
+        ],
+        "arrival": [
+          "EqGrid",
+          "Equipment"
+        ],
+        "confirmed": false,
+        "why": "could not press step 1: the element is gone"
+      }
+    },
+    {
+      "name": "a goal step whose name is shared with no telling label is refused as unstable — no replay is tried",
+      "authored": [
+        "Lobby",
+        "Button",
+        "Equipment",
+        "EqGrid"
+      ],
+      "declaredStart": {
+        "kind": "lobby-after-boot"
+      },
+      "presses": [
+        {
+          "fired": "click",
+          "selector": "Button",
+          "pressRoot": "Ui/Lobby",
+          "shared": true,
+          "before": {
+            "roots": [
+              "Ui/Lobby"
+            ]
+          },
+          "after": {
+            "roots": [
+              "Ui/Equipment",
+              "Ui/Lobby"
+            ],
+            "added": [
+              "EqGrid",
+              "Equipment"
+            ],
+            "buttons": []
+          }
+        }
+      ],
+      "replay": null,
+      "expect": {
+        "goal": [
+          0
+        ],
+        "dismiss": [],
+        "teachArrival": [
+          "EqGrid",
+          "Equipment"
+        ],
+        "arrival": [
+          "EqGrid",
+          "Equipment"
+        ],
+        "confirmed": false,
+        "why": "refused as unstable",
+        "replayBlocked": true
+      }
+    },
+    {
+      "name": "a step that fired invoke-button is recorded but a replay does not press it",
+      "authored": [
+        "Lobby",
+        "Widget",
+        "Modes",
+        "ModeList"
+      ],
+      "declaredStart": {
+        "kind": "lobby-after-boot"
+      },
+      "presses": [
+        {
+          "fired": "invoke-button",
+          "selector": "Widget",
+          "pressRoot": "Ui/Lobby",
+          "shared": false,
+          "before": {
+            "roots": [
+              "Ui/Lobby"
+            ]
+          },
+          "after": {
+            "roots": [
+              "Ui/Lobby",
+              "Ui/Modes"
+            ],
+            "added": [
+              "ModeList",
+              "Modes"
+            ],
+            "buttons": []
+          }
+        }
+      ],
+      "replay": null,
+      "expect": {
+        "goal": [
+          0
+        ],
+        "dismiss": [],
+        "teachArrival": [
+          "ModeList",
+          "Modes"
+        ],
+        "arrival": [
+          "ModeList",
+          "Modes"
+        ],
+        "confirmed": false,
+        "why": "fired invoke-button",
+        "replayBlocked": true,
+        "steps": [
+          {
+            "kind": "invoke-button",
+            "name": "Widget"
+          }
+        ]
+      }
+    },
+    {
+      "name": "a gesture on the game world is a goal step a replay does not press yet",
+      "authored": [
+        "Board",
+        "Result",
+        "ResultStars"
+      ],
+      "declaredStart": {
+        "kind": "lobby-after-boot"
+      },
+      "presses": [
+        {
+          "fired": "tap-at",
+          "x": 0.5,
+          "y": 0.25,
+          "pressRoot": null,
+          "shared": false,
+          "before": {
+            "roots": [
+              "Ui/Board"
+            ]
+          },
+          "after": {
+            "roots": [
+              "Ui/Board",
+              "Ui/Result"
+            ],
+            "added": [
+              "Result",
+              "ResultStars"
+            ],
+            "buttons": []
+          }
+        }
+      ],
+      "replay": null,
+      "expect": {
+        "goal": [
+          0
+        ],
+        "dismiss": [],
+        "teachArrival": [
+          "Result",
+          "ResultStars"
+        ],
+        "arrival": [
+          "Result",
+          "ResultStars"
+        ],
+        "confirmed": false,
+        "why": "gesture on the game world (tap-at)",
+        "replayBlocked": true,
+        "steps": [
+          {
+            "kind": "tap-at",
+            "x": 0.5,
+            "y": 0.25
+          }
+        ]
+      }
+    },
+    {
+      "name": "a recipe that starts from another recipe is not replayed until recipes chain",
+      "authored": [
+        "Lobby",
+        "Equip",
+        "Equipment",
+        "EqGrid"
+      ],
+      "declaredStart": {
+        "kind": "recipe",
+        "recipeId": "r0123456789abcdef"
+      },
+      "presses": [
+        {
+          "fired": "click",
+          "selector": "Equip",
+          "pressRoot": "Ui/Lobby",
+          "shared": false,
+          "before": {
+            "roots": [
+              "Ui/Lobby"
+            ]
+          },
+          "after": {
+            "roots": [
+              "Ui/Equipment",
+              "Ui/Lobby"
+            ],
+            "added": [
+              "EqGrid",
+              "Equipment"
+            ],
+            "buttons": []
+          }
+        }
+      ],
+      "replay": null,
+      "expect": {
+        "goal": [
+          0
+        ],
+        "dismiss": [],
+        "teachArrival": [
+          "EqGrid",
+          "Equipment"
+        ],
+        "arrival": [
+          "EqGrid",
+          "Equipment"
+        ],
+        "confirmed": false,
+        "why": "until recipes chain",
+        "replayBlocked": true
+      }
+    },
+    {
+      "name": "every press closed something — there is no path",
+      "authored": [
+        "Lobby",
+        "Close"
+      ],
+      "declaredStart": {
+        "kind": "lobby-after-boot"
+      },
+      "presses": [
+        {
+          "fired": "click",
+          "selector": "Close",
+          "pressRoot": "Ui/Offer",
+          "shared": false,
+          "before": {
+            "roots": [
+              "Ui/Lobby",
+              "Ui/Offer"
+            ]
+          },
+          "after": {
+            "roots": [
+              "Ui/Lobby"
+            ],
+            "added": [],
+            "buttons": []
+          }
+        }
+      ],
+      "replay": null,
+      "expect": {
+        "goal": [],
+        "dismiss": [
+          "Close"
+        ],
+        "teachArrival": [],
+        "arrival": [],
+        "confirmed": false,
+        "why": "every press closed something",
+        "replayBlocked": true
+      }
+    },
+    {
+      "name": "nothing pressed",
+      "authored": [
+        "Lobby"
+      ],
+      "declaredStart": {
+        "kind": "lobby-after-boot"
+      },
+      "presses": [],
+      "replay": null,
+      "expect": {
+        "goal": [],
+        "dismiss": [],
+        "teachArrival": [],
+        "arrival": [],
+        "confirmed": false,
+        "why": "nothing was pressed",
+        "replayBlocked": true
+      }
+    },
+    {
+      "name": "a cheat run while teaching is a goal step, in order",
+      "authored": [
+        "Lobby",
+        "Equip",
+        "Equipment",
+        "EqGrid"
+      ],
+      "declaredStart": {
+        "kind": "lobby-after-boot"
+      },
+      "presses": [
+        {
+          "fired": "cheat",
+          "command": "Skip 10 Levels",
+          "pressRoot": null,
+          "shared": false,
+          "before": {
+            "roots": [
+              "Ui/Lobby"
+            ]
+          },
+          "after": {
+            "roots": [
+              "Ui/Lobby"
+            ],
+            "added": [],
+            "buttons": []
+          }
+        },
+        {
+          "fired": "click",
+          "selector": "Equip",
+          "pressRoot": "Ui/Lobby",
+          "shared": false,
+          "before": {
+            "roots": [
+              "Ui/Lobby"
+            ]
+          },
+          "after": {
+            "roots": [
+              "Ui/Equipment",
+              "Ui/Lobby"
+            ],
+            "added": [
+              "EqGrid",
+              "Equipment"
+            ],
+            "buttons": []
+          }
+        }
+      ],
+      "replay": {
+        "ran": true,
+        "why": null,
+        "dismissed": [],
+        "steps": [
+          {
+            "pressed": true,
+            "refused": null,
+            "rebound": null,
+            "after": {
+              "roots": [
+                "Ui/Lobby"
+              ],
+              "added": []
+            }
+          },
+          {
+            "pressed": true,
+            "refused": null,
+            "rebound": null,
+            "after": {
+              "roots": [
+                "Ui/Equipment",
+                "Ui/Lobby"
+              ],
+              "added": [
+                "EqGrid",
+                "Equipment"
+              ]
+            }
+          }
+        ]
+      },
+      "expect": {
+        "goal": [
+          0,
+          1
+        ],
+        "dismiss": [],
+        "teachArrival": [
+          "EqGrid",
+          "Equipment"
+        ],
+        "arrival": [
+          "EqGrid",
+          "Equipment"
+        ],
+        "confirmed": true,
+        "why": null,
+        "steps": [
+          {
+            "kind": "cheat",
+            "command": "Skip 10 Levels"
+          },
+          {
+            "kind": "click",
+            "name": "Equip"
+          }
+        ]
+      }
+    }
+  ],
+  "documents": [
+    {
+      "name": "a whole recipe of every step kind reads",
+      "doc": {
+        "schemaVersion": 1,
+        "gameId": "some-game",
+        "updatedAt": "2026-09-27T10:00:00.000Z",
+        "recipes": [
+          {
+            "id": "r0123456789abcdef",
+            "ask": "show me the equipment screen",
+            "learnedBy": "teach",
+            "runId": "cmrun0001",
+            "taughtAt": "2026-09-27T10:00:00.000Z",
+            "declaredStart": {
+              "kind": "lobby-after-boot"
+            },
+            "stamp": {
+              "gameCommit": "3f2c1ab",
+              "kitVersion": "0.12.0"
+            },
+            "steps": [
+              {
+                "kind": "click",
+                "name": "Equip@Equipment",
+                "element": {
+                  "name": "Equip",
+                  "label": "Equipment",
+                  "handler": "LobbyView.OpenEquipment"
+                }
+              },
+              {
+                "kind": "hold",
+                "name": "Charge",
+                "seconds": 1.5
+              },
+              {
+                "kind": "hold-at",
+                "x": 0.5,
+                "y": 0.5,
+                "seconds": 1
+              },
+              {
+                "kind": "tap-at",
+                "x": 0.25,
+                "y": 0.75
+              },
+              {
+                "kind": "drag",
+                "x": 0.5,
+                "y": 0.8,
+                "x2": 0.5,
+                "y2": 0.2,
+                "seconds": 0.4
+              },
+              {
+                "kind": "cheat",
+                "command": "Skip 10 Levels"
+              },
+              {
+                "kind": "invoke-button",
+                "name": "Widget"
+              }
+            ],
+            "dismiss": [
+              "Close",
+              "Later"
+            ],
+            "arrival": [
+              "EqBack",
+              "EqGrid",
+              "Equipment"
+            ],
+            "confirm": {
+              "state": "confirmed",
+              "why": null,
+              "replayRan": true
+            },
+            "screens": [
+              {
+                "step": 0,
+                "role": "goal",
+                "roots": [
+                  "Ui/Equipment",
+                  "Ui/Lobby"
+                ],
+                "added": [
+                  "EqGrid"
+                ],
+                "buttons": [
+                  "EqBack"
+                ],
+                "thumbnailKey": "game-capture/cmrun0001/teach-step-0.jpg"
+              }
+            ],
+            "thumbnailKey": "game-capture/cmrun0001/teach-step-0.jpg"
+          }
+        ]
+      },
+      "ok": true
+    },
+    {
+      "name": "an empty book reads",
+      "doc": {
+        "schemaVersion": 1,
+        "gameId": "g",
+        "updatedAt": "t",
+        "recipes": []
+      },
+      "ok": true
+    },
+    {
+      "name": "extra keys are read past, not refused",
+      "doc": {
+        "schemaVersion": 1,
+        "gameId": "some-game",
+        "updatedAt": "2026-09-27T10:00:00.000Z",
+        "recipes": [
+          {
+            "id": "r0123456789abcdef",
+            "ask": "show me the equipment screen",
+            "learnedBy": "teach",
+            "runId": "cmrun0001",
+            "taughtAt": "2026-09-27T10:00:00.000Z",
+            "declaredStart": {
+              "kind": "lobby-after-boot"
+            },
+            "stamp": {
+              "gameCommit": "3f2c1ab",
+              "kitVersion": "0.12.0"
+            },
+            "steps": [
+              {
+                "kind": "click",
+                "name": "Equip@Equipment",
+                "element": {
+                  "name": "Equip",
+                  "label": "Equipment",
+                  "handler": "LobbyView.OpenEquipment"
+                }
+              },
+              {
+                "kind": "hold",
+                "name": "Charge",
+                "seconds": 1.5
+              },
+              {
+                "kind": "hold-at",
+                "x": 0.5,
+                "y": 0.5,
+                "seconds": 1
+              },
+              {
+                "kind": "tap-at",
+                "x": 0.25,
+                "y": 0.75
+              },
+              {
+                "kind": "drag",
+                "x": 0.5,
+                "y": 0.8,
+                "x2": 0.5,
+                "y2": 0.2,
+                "seconds": 0.4
+              },
+              {
+                "kind": "cheat",
+                "command": "Skip 10 Levels"
+              },
+              {
+                "kind": "invoke-button",
+                "name": "Widget"
+              }
+            ],
+            "dismiss": [
+              "Close",
+              "Later"
+            ],
+            "arrival": [
+              "EqBack",
+              "EqGrid",
+              "Equipment"
+            ],
+            "confirm": {
+              "state": "confirmed",
+              "why": null,
+              "replayRan": true
+            },
+            "screens": [
+              {
+                "step": 0,
+                "role": "goal",
+                "roots": [
+                  "Ui/Equipment",
+                  "Ui/Lobby"
+                ],
+                "added": [
+                  "EqGrid"
+                ],
+                "buttons": [
+                  "EqBack"
+                ],
+                "thumbnailKey": "game-capture/cmrun0001/teach-step-0.jpg"
+              }
+            ],
+            "thumbnailKey": "game-capture/cmrun0001/teach-step-0.jpg",
+            "future": 1
+          }
+        ],
+        "note": "hi"
+      },
+      "ok": true
+    },
+    {
+      "name": "a recipe that starts from another recipe reads",
+      "doc": {
+        "schemaVersion": 1,
+        "gameId": "some-game",
+        "updatedAt": "2026-09-27T10:00:00.000Z",
+        "recipes": [
+          {
+            "id": "r0123456789abcdef",
+            "ask": "show me the equipment screen",
+            "learnedBy": "teach",
+            "runId": "cmrun0001",
+            "taughtAt": "2026-09-27T10:00:00.000Z",
+            "declaredStart": {
+              "kind": "recipe",
+              "recipeId": "rfedcba9876543210"
+            },
+            "stamp": {
+              "gameCommit": "3f2c1ab",
+              "kitVersion": "0.12.0"
+            },
+            "steps": [
+              {
+                "kind": "click",
+                "name": "Equip@Equipment",
+                "element": {
+                  "name": "Equip",
+                  "label": "Equipment",
+                  "handler": "LobbyView.OpenEquipment"
+                }
+              },
+              {
+                "kind": "hold",
+                "name": "Charge",
+                "seconds": 1.5
+              },
+              {
+                "kind": "hold-at",
+                "x": 0.5,
+                "y": 0.5,
+                "seconds": 1
+              },
+              {
+                "kind": "tap-at",
+                "x": 0.25,
+                "y": 0.75
+              },
+              {
+                "kind": "drag",
+                "x": 0.5,
+                "y": 0.8,
+                "x2": 0.5,
+                "y2": 0.2,
+                "seconds": 0.4
+              },
+              {
+                "kind": "cheat",
+                "command": "Skip 10 Levels"
+              },
+              {
+                "kind": "invoke-button",
+                "name": "Widget"
+              }
+            ],
+            "dismiss": [
+              "Close",
+              "Later"
+            ],
+            "arrival": [
+              "EqBack",
+              "EqGrid",
+              "Equipment"
+            ],
+            "confirm": {
+              "state": "confirmed",
+              "why": null,
+              "replayRan": true
+            },
+            "screens": [
+              {
+                "step": 0,
+                "role": "goal",
+                "roots": [
+                  "Ui/Equipment",
+                  "Ui/Lobby"
+                ],
+                "added": [
+                  "EqGrid"
+                ],
+                "buttons": [
+                  "EqBack"
+                ],
+                "thumbnailKey": "game-capture/cmrun0001/teach-step-0.jpg"
+              }
+            ],
+            "thumbnailKey": "game-capture/cmrun0001/teach-step-0.jpg"
+          }
+        ]
+      },
+      "ok": true
+    },
+    {
+      "name": "an unconfirmed recipe with no thumbnail and no commit reads",
+      "doc": {
+        "schemaVersion": 1,
+        "gameId": "some-game",
+        "updatedAt": "2026-09-27T10:00:00.000Z",
+        "recipes": [
+          {
+            "id": "r0123456789abcdef",
+            "ask": "show me the equipment screen",
+            "learnedBy": "teach",
+            "runId": "cmrun0001",
+            "taughtAt": "2026-09-27T10:00:00.000Z",
+            "declaredStart": {
+              "kind": "lobby-after-boot"
+            },
+            "stamp": {
+              "gameCommit": null,
+              "kitVersion": "0.12.0"
+            },
+            "steps": [
+              {
+                "kind": "click",
+                "name": "Equip@Equipment",
+                "element": {
+                  "name": "Equip",
+                  "label": "Equipment",
+                  "handler": "LobbyView.OpenEquipment"
+                }
+              },
+              {
+                "kind": "hold",
+                "name": "Charge",
+                "seconds": 1.5
+              },
+              {
+                "kind": "hold-at",
+                "x": 0.5,
+                "y": 0.5,
+                "seconds": 1
+              },
+              {
+                "kind": "tap-at",
+                "x": 0.25,
+                "y": 0.75
+              },
+              {
+                "kind": "drag",
+                "x": 0.5,
+                "y": 0.8,
+                "x2": 0.5,
+                "y2": 0.2,
+                "seconds": 0.4
+              },
+              {
+                "kind": "cheat",
+                "command": "Skip 10 Levels"
+              },
+              {
+                "kind": "invoke-button",
+                "name": "Widget"
+              }
+            ],
+            "dismiss": [
+              "Close",
+              "Later"
+            ],
+            "arrival": [
+              "EqBack",
+              "EqGrid",
+              "Equipment"
+            ],
+            "confirm": {
+              "state": "unconfirmed",
+              "why": "the replay did not run",
+              "replayRan": false
+            },
+            "screens": [
+              {
+                "step": 0,
+                "role": "goal",
+                "roots": [
+                  "Ui/Equipment",
+                  "Ui/Lobby"
+                ],
+                "added": [
+                  "EqGrid"
+                ],
+                "buttons": [
+                  "EqBack"
+                ],
+                "thumbnailKey": "game-capture/cmrun0001/teach-step-0.jpg"
+              }
+            ],
+            "thumbnailKey": null
+          }
+        ]
+      },
+      "ok": true
+    },
+    {
+      "name": "another schema version is refused",
+      "doc": {
+        "schemaVersion": 2,
+        "gameId": "some-game",
+        "updatedAt": "2026-09-27T10:00:00.000Z",
+        "recipes": [
+          {
+            "id": "r0123456789abcdef",
+            "ask": "show me the equipment screen",
+            "learnedBy": "teach",
+            "runId": "cmrun0001",
+            "taughtAt": "2026-09-27T10:00:00.000Z",
+            "declaredStart": {
+              "kind": "lobby-after-boot"
+            },
+            "stamp": {
+              "gameCommit": "3f2c1ab",
+              "kitVersion": "0.12.0"
+            },
+            "steps": [
+              {
+                "kind": "click",
+                "name": "Equip@Equipment",
+                "element": {
+                  "name": "Equip",
+                  "label": "Equipment",
+                  "handler": "LobbyView.OpenEquipment"
+                }
+              },
+              {
+                "kind": "hold",
+                "name": "Charge",
+                "seconds": 1.5
+              },
+              {
+                "kind": "hold-at",
+                "x": 0.5,
+                "y": 0.5,
+                "seconds": 1
+              },
+              {
+                "kind": "tap-at",
+                "x": 0.25,
+                "y": 0.75
+              },
+              {
+                "kind": "drag",
+                "x": 0.5,
+                "y": 0.8,
+                "x2": 0.5,
+                "y2": 0.2,
+                "seconds": 0.4
+              },
+              {
+                "kind": "cheat",
+                "command": "Skip 10 Levels"
+              },
+              {
+                "kind": "invoke-button",
+                "name": "Widget"
+              }
+            ],
+            "dismiss": [
+              "Close",
+              "Later"
+            ],
+            "arrival": [
+              "EqBack",
+              "EqGrid",
+              "Equipment"
+            ],
+            "confirm": {
+              "state": "confirmed",
+              "why": null,
+              "replayRan": true
+            },
+            "screens": [
+              {
+                "step": 0,
+                "role": "goal",
+                "roots": [
+                  "Ui/Equipment",
+                  "Ui/Lobby"
+                ],
+                "added": [
+                  "EqGrid"
+                ],
+                "buttons": [
+                  "EqBack"
+                ],
+                "thumbnailKey": "game-capture/cmrun0001/teach-step-0.jpg"
+              }
+            ],
+            "thumbnailKey": "game-capture/cmrun0001/teach-step-0.jpg"
+          }
+        ]
+      },
+      "ok": false
+    },
+    {
+      "name": "recipes that are not a list are refused",
+      "doc": {
+        "schemaVersion": 1,
+        "gameId": "some-game",
+        "updatedAt": "2026-09-27T10:00:00.000Z",
+        "recipes": {}
+      },
+      "ok": false
+    },
+    {
+      "name": "an id that is not r + 16 hex is refused",
+      "doc": {
+        "schemaVersion": 1,
+        "gameId": "some-game",
+        "updatedAt": "2026-09-27T10:00:00.000Z",
+        "recipes": [
+          {
+            "id": "R0123",
+            "ask": "show me the equipment screen",
+            "learnedBy": "teach",
+            "runId": "cmrun0001",
+            "taughtAt": "2026-09-27T10:00:00.000Z",
+            "declaredStart": {
+              "kind": "lobby-after-boot"
+            },
+            "stamp": {
+              "gameCommit": "3f2c1ab",
+              "kitVersion": "0.12.0"
+            },
+            "steps": [
+              {
+                "kind": "click",
+                "name": "Equip@Equipment",
+                "element": {
+                  "name": "Equip",
+                  "label": "Equipment",
+                  "handler": "LobbyView.OpenEquipment"
+                }
+              },
+              {
+                "kind": "hold",
+                "name": "Charge",
+                "seconds": 1.5
+              },
+              {
+                "kind": "hold-at",
+                "x": 0.5,
+                "y": 0.5,
+                "seconds": 1
+              },
+              {
+                "kind": "tap-at",
+                "x": 0.25,
+                "y": 0.75
+              },
+              {
+                "kind": "drag",
+                "x": 0.5,
+                "y": 0.8,
+                "x2": 0.5,
+                "y2": 0.2,
+                "seconds": 0.4
+              },
+              {
+                "kind": "cheat",
+                "command": "Skip 10 Levels"
+              },
+              {
+                "kind": "invoke-button",
+                "name": "Widget"
+              }
+            ],
+            "dismiss": [
+              "Close",
+              "Later"
+            ],
+            "arrival": [
+              "EqBack",
+              "EqGrid",
+              "Equipment"
+            ],
+            "confirm": {
+              "state": "confirmed",
+              "why": null,
+              "replayRan": true
+            },
+            "screens": [
+              {
+                "step": 0,
+                "role": "goal",
+                "roots": [
+                  "Ui/Equipment",
+                  "Ui/Lobby"
+                ],
+                "added": [
+                  "EqGrid"
+                ],
+                "buttons": [
+                  "EqBack"
+                ],
+                "thumbnailKey": "game-capture/cmrun0001/teach-step-0.jpg"
+              }
+            ],
+            "thumbnailKey": "game-capture/cmrun0001/teach-step-0.jpg"
+          }
+        ]
+      },
+      "ok": false
+    },
+    {
+      "name": "an unknown step kind is refused",
+      "doc": {
+        "schemaVersion": 1,
+        "gameId": "some-game",
+        "updatedAt": "2026-09-27T10:00:00.000Z",
+        "recipes": [
+          {
+            "id": "r0123456789abcdef",
+            "ask": "show me the equipment screen",
+            "learnedBy": "teach",
+            "runId": "cmrun0001",
+            "taughtAt": "2026-09-27T10:00:00.000Z",
+            "declaredStart": {
+              "kind": "lobby-after-boot"
+            },
+            "stamp": {
+              "gameCommit": "3f2c1ab",
+              "kitVersion": "0.12.0"
+            },
+            "steps": [
+              {
+                "kind": "click",
+                "name": "Equip@Equipment",
+                "element": {
+                  "name": "Equip",
+                  "label": "Equipment",
+                  "handler": "LobbyView.OpenEquipment"
+                }
+              },
+              {
+                "kind": "hold",
+                "name": "Charge",
+                "seconds": 1.5
+              },
+              {
+                "kind": "hold-at",
+                "x": 0.5,
+                "y": 0.5,
+                "seconds": 1
+              },
+              {
+                "kind": "tap-at",
+                "x": 0.25,
+                "y": 0.75
+              },
+              {
+                "kind": "drag",
+                "x": 0.5,
+                "y": 0.8,
+                "x2": 0.5,
+                "y2": 0.2,
+                "seconds": 0.4
+              },
+              {
+                "kind": "cheat",
+                "command": "Skip 10 Levels"
+              },
+              {
+                "kind": "invoke-button",
+                "name": "Widget"
+              },
+              {
+                "kind": "raw",
+                "command": "x"
+              }
+            ],
+            "dismiss": [
+              "Close",
+              "Later"
+            ],
+            "arrival": [
+              "EqBack",
+              "EqGrid",
+              "Equipment"
+            ],
+            "confirm": {
+              "state": "confirmed",
+              "why": null,
+              "replayRan": true
+            },
+            "screens": [
+              {
+                "step": 0,
+                "role": "goal",
+                "roots": [
+                  "Ui/Equipment",
+                  "Ui/Lobby"
+                ],
+                "added": [
+                  "EqGrid"
+                ],
+                "buttons": [
+                  "EqBack"
+                ],
+                "thumbnailKey": "game-capture/cmrun0001/teach-step-0.jpg"
+              }
+            ],
+            "thumbnailKey": "game-capture/cmrun0001/teach-step-0.jpg"
+          }
+        ]
+      },
+      "ok": false
+    },
+    {
+      "name": "a click with no name is refused",
+      "doc": {
+        "schemaVersion": 1,
+        "gameId": "some-game",
+        "updatedAt": "2026-09-27T10:00:00.000Z",
+        "recipes": [
+          {
+            "id": "r0123456789abcdef",
+            "ask": "show me the equipment screen",
+            "learnedBy": "teach",
+            "runId": "cmrun0001",
+            "taughtAt": "2026-09-27T10:00:00.000Z",
+            "declaredStart": {
+              "kind": "lobby-after-boot"
+            },
+            "stamp": {
+              "gameCommit": "3f2c1ab",
+              "kitVersion": "0.12.0"
+            },
+            "steps": [
+              {
+                "kind": "click"
+              },
+              {
+                "kind": "hold",
+                "name": "Charge",
+                "seconds": 1.5
+              },
+              {
+                "kind": "hold-at",
+                "x": 0.5,
+                "y": 0.5,
+                "seconds": 1
+              },
+              {
+                "kind": "tap-at",
+                "x": 0.25,
+                "y": 0.75
+              },
+              {
+                "kind": "drag",
+                "x": 0.5,
+                "y": 0.8,
+                "x2": 0.5,
+                "y2": 0.2,
+                "seconds": 0.4
+              },
+              {
+                "kind": "cheat",
+                "command": "Skip 10 Levels"
+              },
+              {
+                "kind": "invoke-button",
+                "name": "Widget"
+              }
+            ],
+            "dismiss": [
+              "Close",
+              "Later"
+            ],
+            "arrival": [
+              "EqBack",
+              "EqGrid",
+              "Equipment"
+            ],
+            "confirm": {
+              "state": "confirmed",
+              "why": null,
+              "replayRan": true
+            },
+            "screens": [
+              {
+                "step": 0,
+                "role": "goal",
+                "roots": [
+                  "Ui/Equipment",
+                  "Ui/Lobby"
+                ],
+                "added": [
+                  "EqGrid"
+                ],
+                "buttons": [
+                  "EqBack"
+                ],
+                "thumbnailKey": "game-capture/cmrun0001/teach-step-0.jpg"
+              }
+            ],
+            "thumbnailKey": "game-capture/cmrun0001/teach-step-0.jpg"
+          }
+        ]
+      },
+      "ok": false
+    },
+    {
+      "name": "a point outside the screen (x > 1) is refused",
+      "doc": {
+        "schemaVersion": 1,
+        "gameId": "some-game",
+        "updatedAt": "2026-09-27T10:00:00.000Z",
+        "recipes": [
+          {
+            "id": "r0123456789abcdef",
+            "ask": "show me the equipment screen",
+            "learnedBy": "teach",
+            "runId": "cmrun0001",
+            "taughtAt": "2026-09-27T10:00:00.000Z",
+            "declaredStart": {
+              "kind": "lobby-after-boot"
+            },
+            "stamp": {
+              "gameCommit": "3f2c1ab",
+              "kitVersion": "0.12.0"
+            },
+            "steps": [
+              {
+                "kind": "click",
+                "name": "Equip@Equipment",
+                "element": {
+                  "name": "Equip",
+                  "label": "Equipment",
+                  "handler": "LobbyView.OpenEquipment"
+                }
+              },
+              {
+                "kind": "hold",
+                "name": "Charge",
+                "seconds": 1.5
+              },
+              {
+                "kind": "hold-at",
+                "x": 0.5,
+                "y": 0.5,
+                "seconds": 1
+              },
+              {
+                "kind": "tap-at",
+                "x": 1.5,
+                "y": 0.2
+              },
+              {
+                "kind": "drag",
+                "x": 0.5,
+                "y": 0.8,
+                "x2": 0.5,
+                "y2": 0.2,
+                "seconds": 0.4
+              },
+              {
+                "kind": "cheat",
+                "command": "Skip 10 Levels"
+              },
+              {
+                "kind": "invoke-button",
+                "name": "Widget"
+              }
+            ],
+            "dismiss": [
+              "Close",
+              "Later"
+            ],
+            "arrival": [
+              "EqBack",
+              "EqGrid",
+              "Equipment"
+            ],
+            "confirm": {
+              "state": "confirmed",
+              "why": null,
+              "replayRan": true
+            },
+            "screens": [
+              {
+                "step": 0,
+                "role": "goal",
+                "roots": [
+                  "Ui/Equipment",
+                  "Ui/Lobby"
+                ],
+                "added": [
+                  "EqGrid"
+                ],
+                "buttons": [
+                  "EqBack"
+                ],
+                "thumbnailKey": "game-capture/cmrun0001/teach-step-0.jpg"
+              }
+            ],
+            "thumbnailKey": "game-capture/cmrun0001/teach-step-0.jpg"
+          }
+        ]
+      },
+      "ok": false
+    },
+    {
+      "name": "a start from a recipe with no recipe id is refused",
+      "doc": {
+        "schemaVersion": 1,
+        "gameId": "some-game",
+        "updatedAt": "2026-09-27T10:00:00.000Z",
+        "recipes": [
+          {
+            "id": "r0123456789abcdef",
+            "ask": "show me the equipment screen",
+            "learnedBy": "teach",
+            "runId": "cmrun0001",
+            "taughtAt": "2026-09-27T10:00:00.000Z",
+            "declaredStart": {
+              "kind": "recipe"
+            },
+            "stamp": {
+              "gameCommit": "3f2c1ab",
+              "kitVersion": "0.12.0"
+            },
+            "steps": [
+              {
+                "kind": "click",
+                "name": "Equip@Equipment",
+                "element": {
+                  "name": "Equip",
+                  "label": "Equipment",
+                  "handler": "LobbyView.OpenEquipment"
+                }
+              },
+              {
+                "kind": "hold",
+                "name": "Charge",
+                "seconds": 1.5
+              },
+              {
+                "kind": "hold-at",
+                "x": 0.5,
+                "y": 0.5,
+                "seconds": 1
+              },
+              {
+                "kind": "tap-at",
+                "x": 0.25,
+                "y": 0.75
+              },
+              {
+                "kind": "drag",
+                "x": 0.5,
+                "y": 0.8,
+                "x2": 0.5,
+                "y2": 0.2,
+                "seconds": 0.4
+              },
+              {
+                "kind": "cheat",
+                "command": "Skip 10 Levels"
+              },
+              {
+                "kind": "invoke-button",
+                "name": "Widget"
+              }
+            ],
+            "dismiss": [
+              "Close",
+              "Later"
+            ],
+            "arrival": [
+              "EqBack",
+              "EqGrid",
+              "Equipment"
+            ],
+            "confirm": {
+              "state": "confirmed",
+              "why": null,
+              "replayRan": true
+            },
+            "screens": [
+              {
+                "step": 0,
+                "role": "goal",
+                "roots": [
+                  "Ui/Equipment",
+                  "Ui/Lobby"
+                ],
+                "added": [
+                  "EqGrid"
+                ],
+                "buttons": [
+                  "EqBack"
+                ],
+                "thumbnailKey": "game-capture/cmrun0001/teach-step-0.jpg"
+              }
+            ],
+            "thumbnailKey": "game-capture/cmrun0001/teach-step-0.jpg"
+          }
+        ]
+      },
+      "ok": false
+    },
+    {
+      "name": "an unknown start kind is refused",
+      "doc": {
+        "schemaVersion": 1,
+        "gameId": "some-game",
+        "updatedAt": "2026-09-27T10:00:00.000Z",
+        "recipes": [
+          {
+            "id": "r0123456789abcdef",
+            "ask": "show me the equipment screen",
+            "learnedBy": "teach",
+            "runId": "cmrun0001",
+            "taughtAt": "2026-09-27T10:00:00.000Z",
+            "declaredStart": {
+              "kind": "board"
+            },
+            "stamp": {
+              "gameCommit": "3f2c1ab",
+              "kitVersion": "0.12.0"
+            },
+            "steps": [
+              {
+                "kind": "click",
+                "name": "Equip@Equipment",
+                "element": {
+                  "name": "Equip",
+                  "label": "Equipment",
+                  "handler": "LobbyView.OpenEquipment"
+                }
+              },
+              {
+                "kind": "hold",
+                "name": "Charge",
+                "seconds": 1.5
+              },
+              {
+                "kind": "hold-at",
+                "x": 0.5,
+                "y": 0.5,
+                "seconds": 1
+              },
+              {
+                "kind": "tap-at",
+                "x": 0.25,
+                "y": 0.75
+              },
+              {
+                "kind": "drag",
+                "x": 0.5,
+                "y": 0.8,
+                "x2": 0.5,
+                "y2": 0.2,
+                "seconds": 0.4
+              },
+              {
+                "kind": "cheat",
+                "command": "Skip 10 Levels"
+              },
+              {
+                "kind": "invoke-button",
+                "name": "Widget"
+              }
+            ],
+            "dismiss": [
+              "Close",
+              "Later"
+            ],
+            "arrival": [
+              "EqBack",
+              "EqGrid",
+              "Equipment"
+            ],
+            "confirm": {
+              "state": "confirmed",
+              "why": null,
+              "replayRan": true
+            },
+            "screens": [
+              {
+                "step": 0,
+                "role": "goal",
+                "roots": [
+                  "Ui/Equipment",
+                  "Ui/Lobby"
+                ],
+                "added": [
+                  "EqGrid"
+                ],
+                "buttons": [
+                  "EqBack"
+                ],
+                "thumbnailKey": "game-capture/cmrun0001/teach-step-0.jpg"
+              }
+            ],
+            "thumbnailKey": "game-capture/cmrun0001/teach-step-0.jpg"
+          }
+        ]
+      },
+      "ok": false
+    },
+    {
+      "name": "a confirm state that is neither is refused",
+      "doc": {
+        "schemaVersion": 1,
+        "gameId": "some-game",
+        "updatedAt": "2026-09-27T10:00:00.000Z",
+        "recipes": [
+          {
+            "id": "r0123456789abcdef",
+            "ask": "show me the equipment screen",
+            "learnedBy": "teach",
+            "runId": "cmrun0001",
+            "taughtAt": "2026-09-27T10:00:00.000Z",
+            "declaredStart": {
+              "kind": "lobby-after-boot"
+            },
+            "stamp": {
+              "gameCommit": "3f2c1ab",
+              "kitVersion": "0.12.0"
+            },
+            "steps": [
+              {
+                "kind": "click",
+                "name": "Equip@Equipment",
+                "element": {
+                  "name": "Equip",
+                  "label": "Equipment",
+                  "handler": "LobbyView.OpenEquipment"
+                }
+              },
+              {
+                "kind": "hold",
+                "name": "Charge",
+                "seconds": 1.5
+              },
+              {
+                "kind": "hold-at",
+                "x": 0.5,
+                "y": 0.5,
+                "seconds": 1
+              },
+              {
+                "kind": "tap-at",
+                "x": 0.25,
+                "y": 0.75
+              },
+              {
+                "kind": "drag",
+                "x": 0.5,
+                "y": 0.8,
+                "x2": 0.5,
+                "y2": 0.2,
+                "seconds": 0.4
+              },
+              {
+                "kind": "cheat",
+                "command": "Skip 10 Levels"
+              },
+              {
+                "kind": "invoke-button",
+                "name": "Widget"
+              }
+            ],
+            "dismiss": [
+              "Close",
+              "Later"
+            ],
+            "arrival": [
+              "EqBack",
+              "EqGrid",
+              "Equipment"
+            ],
+            "confirm": {
+              "state": "maybe",
+              "why": null,
+              "replayRan": true
+            },
+            "screens": [
+              {
+                "step": 0,
+                "role": "goal",
+                "roots": [
+                  "Ui/Equipment",
+                  "Ui/Lobby"
+                ],
+                "added": [
+                  "EqGrid"
+                ],
+                "buttons": [
+                  "EqBack"
+                ],
+                "thumbnailKey": "game-capture/cmrun0001/teach-step-0.jpg"
+              }
+            ],
+            "thumbnailKey": "game-capture/cmrun0001/teach-step-0.jpg"
+          }
+        ]
+      },
+      "ok": false
+    },
+    {
+      "name": "a recipe learned some other way is refused (P4 learns by teach only)",
+      "doc": {
+        "schemaVersion": 1,
+        "gameId": "some-game",
+        "updatedAt": "2026-09-27T10:00:00.000Z",
+        "recipes": [
+          {
+            "id": "r0123456789abcdef",
+            "ask": "show me the equipment screen",
+            "learnedBy": "auto",
+            "runId": "cmrun0001",
+            "taughtAt": "2026-09-27T10:00:00.000Z",
+            "declaredStart": {
+              "kind": "lobby-after-boot"
+            },
+            "stamp": {
+              "gameCommit": "3f2c1ab",
+              "kitVersion": "0.12.0"
+            },
+            "steps": [
+              {
+                "kind": "click",
+                "name": "Equip@Equipment",
+                "element": {
+                  "name": "Equip",
+                  "label": "Equipment",
+                  "handler": "LobbyView.OpenEquipment"
+                }
+              },
+              {
+                "kind": "hold",
+                "name": "Charge",
+                "seconds": 1.5
+              },
+              {
+                "kind": "hold-at",
+                "x": 0.5,
+                "y": 0.5,
+                "seconds": 1
+              },
+              {
+                "kind": "tap-at",
+                "x": 0.25,
+                "y": 0.75
+              },
+              {
+                "kind": "drag",
+                "x": 0.5,
+                "y": 0.8,
+                "x2": 0.5,
+                "y2": 0.2,
+                "seconds": 0.4
+              },
+              {
+                "kind": "cheat",
+                "command": "Skip 10 Levels"
+              },
+              {
+                "kind": "invoke-button",
+                "name": "Widget"
+              }
+            ],
+            "dismiss": [
+              "Close",
+              "Later"
+            ],
+            "arrival": [
+              "EqBack",
+              "EqGrid",
+              "Equipment"
+            ],
+            "confirm": {
+              "state": "confirmed",
+              "why": null,
+              "replayRan": true
+            },
+            "screens": [
+              {
+                "step": 0,
+                "role": "goal",
+                "roots": [
+                  "Ui/Equipment",
+                  "Ui/Lobby"
+                ],
+                "added": [
+                  "EqGrid"
+                ],
+                "buttons": [
+                  "EqBack"
+                ],
+                "thumbnailKey": "game-capture/cmrun0001/teach-step-0.jpg"
+              }
+            ],
+            "thumbnailKey": "game-capture/cmrun0001/teach-step-0.jpg"
+          }
+        ]
+      },
+      "ok": false
+    },
+    {
+      "name": "an empty dismiss name is refused",
+      "doc": {
+        "schemaVersion": 1,
+        "gameId": "some-game",
+        "updatedAt": "2026-09-27T10:00:00.000Z",
+        "recipes": [
+          {
+            "id": "r0123456789abcdef",
+            "ask": "show me the equipment screen",
+            "learnedBy": "teach",
+            "runId": "cmrun0001",
+            "taughtAt": "2026-09-27T10:00:00.000Z",
+            "declaredStart": {
+              "kind": "lobby-after-boot"
+            },
+            "stamp": {
+              "gameCommit": "3f2c1ab",
+              "kitVersion": "0.12.0"
+            },
+            "steps": [
+              {
+                "kind": "click",
+                "name": "Equip@Equipment",
+                "element": {
+                  "name": "Equip",
+                  "label": "Equipment",
+                  "handler": "LobbyView.OpenEquipment"
+                }
+              },
+              {
+                "kind": "hold",
+                "name": "Charge",
+                "seconds": 1.5
+              },
+              {
+                "kind": "hold-at",
+                "x": 0.5,
+                "y": 0.5,
+                "seconds": 1
+              },
+              {
+                "kind": "tap-at",
+                "x": 0.25,
+                "y": 0.75
+              },
+              {
+                "kind": "drag",
+                "x": 0.5,
+                "y": 0.8,
+                "x2": 0.5,
+                "y2": 0.2,
+                "seconds": 0.4
+              },
+              {
+                "kind": "cheat",
+                "command": "Skip 10 Levels"
+              },
+              {
+                "kind": "invoke-button",
+                "name": "Widget"
+              }
+            ],
+            "dismiss": [
+              ""
+            ],
+            "arrival": [
+              "EqBack",
+              "EqGrid",
+              "Equipment"
+            ],
+            "confirm": {
+              "state": "confirmed",
+              "why": null,
+              "replayRan": true
+            },
+            "screens": [
+              {
+                "step": 0,
+                "role": "goal",
+                "roots": [
+                  "Ui/Equipment",
+                  "Ui/Lobby"
+                ],
+                "added": [
+                  "EqGrid"
+                ],
+                "buttons": [
+                  "EqBack"
+                ],
+                "thumbnailKey": "game-capture/cmrun0001/teach-step-0.jpg"
+              }
+            ],
+            "thumbnailKey": "game-capture/cmrun0001/teach-step-0.jpg"
+          }
+        ]
+      },
+      "ok": false
+    },
+    {
+      "name": "a stamp with no kit version is refused",
+      "doc": {
+        "schemaVersion": 1,
+        "gameId": "some-game",
+        "updatedAt": "2026-09-27T10:00:00.000Z",
+        "recipes": [
+          {
+            "id": "r0123456789abcdef",
+            "ask": "show me the equipment screen",
+            "learnedBy": "teach",
+            "runId": "cmrun0001",
+            "taughtAt": "2026-09-27T10:00:00.000Z",
+            "declaredStart": {
+              "kind": "lobby-after-boot"
+            },
+            "stamp": {
+              "gameCommit": "3f2c1ab",
+              "kitVersion": ""
+            },
+            "steps": [
+              {
+                "kind": "click",
+                "name": "Equip@Equipment",
+                "element": {
+                  "name": "Equip",
+                  "label": "Equipment",
+                  "handler": "LobbyView.OpenEquipment"
+                }
+              },
+              {
+                "kind": "hold",
+                "name": "Charge",
+                "seconds": 1.5
+              },
+              {
+                "kind": "hold-at",
+                "x": 0.5,
+                "y": 0.5,
+                "seconds": 1
+              },
+              {
+                "kind": "tap-at",
+                "x": 0.25,
+                "y": 0.75
+              },
+              {
+                "kind": "drag",
+                "x": 0.5,
+                "y": 0.8,
+                "x2": 0.5,
+                "y2": 0.2,
+                "seconds": 0.4
+              },
+              {
+                "kind": "cheat",
+                "command": "Skip 10 Levels"
+              },
+              {
+                "kind": "invoke-button",
+                "name": "Widget"
+              }
+            ],
+            "dismiss": [
+              "Close",
+              "Later"
+            ],
+            "arrival": [
+              "EqBack",
+              "EqGrid",
+              "Equipment"
+            ],
+            "confirm": {
+              "state": "confirmed",
+              "why": null,
+              "replayRan": true
+            },
+            "screens": [
+              {
+                "step": 0,
+                "role": "goal",
+                "roots": [
+                  "Ui/Equipment",
+                  "Ui/Lobby"
+                ],
+                "added": [
+                  "EqGrid"
+                ],
+                "buttons": [
+                  "EqBack"
+                ],
+                "thumbnailKey": "game-capture/cmrun0001/teach-step-0.jpg"
+              }
+            ],
+            "thumbnailKey": "game-capture/cmrun0001/teach-step-0.jpg"
+          }
+        ]
+      },
+      "ok": false
+    },
+    {
+      "name": "a screen whose step is not a whole number is refused",
+      "doc": {
+        "schemaVersion": 1,
+        "gameId": "some-game",
+        "updatedAt": "2026-09-27T10:00:00.000Z",
+        "recipes": [
+          {
+            "id": "r0123456789abcdef",
+            "ask": "show me the equipment screen",
+            "learnedBy": "teach",
+            "runId": "cmrun0001",
+            "taughtAt": "2026-09-27T10:00:00.000Z",
+            "declaredStart": {
+              "kind": "lobby-after-boot"
+            },
+            "stamp": {
+              "gameCommit": "3f2c1ab",
+              "kitVersion": "0.12.0"
+            },
+            "steps": [
+              {
+                "kind": "click",
+                "name": "Equip@Equipment",
+                "element": {
+                  "name": "Equip",
+                  "label": "Equipment",
+                  "handler": "LobbyView.OpenEquipment"
+                }
+              },
+              {
+                "kind": "hold",
+                "name": "Charge",
+                "seconds": 1.5
+              },
+              {
+                "kind": "hold-at",
+                "x": 0.5,
+                "y": 0.5,
+                "seconds": 1
+              },
+              {
+                "kind": "tap-at",
+                "x": 0.25,
+                "y": 0.75
+              },
+              {
+                "kind": "drag",
+                "x": 0.5,
+                "y": 0.8,
+                "x2": 0.5,
+                "y2": 0.2,
+                "seconds": 0.4
+              },
+              {
+                "kind": "cheat",
+                "command": "Skip 10 Levels"
+              },
+              {
+                "kind": "invoke-button",
+                "name": "Widget"
+              }
+            ],
+            "dismiss": [
+              "Close",
+              "Later"
+            ],
+            "arrival": [
+              "EqBack",
+              "EqGrid",
+              "Equipment"
+            ],
+            "confirm": {
+              "state": "confirmed",
+              "why": null,
+              "replayRan": true
+            },
+            "screens": [
+              {
+                "step": 0.5,
+                "role": "goal",
+                "roots": [
+                  "Ui/Equipment",
+                  "Ui/Lobby"
+                ],
+                "added": [
+                  "EqGrid"
+                ],
+                "buttons": [
+                  "EqBack"
+                ],
+                "thumbnailKey": "game-capture/cmrun0001/teach-step-0.jpg"
+              }
+            ],
+            "thumbnailKey": "game-capture/cmrun0001/teach-step-0.jpg"
+          }
+        ]
+      },
+      "ok": false
+    },
+    {
+      "name": "an ask longer than 200 characters is refused",
+      "doc": {
+        "schemaVersion": 1,
+        "gameId": "some-game",
+        "updatedAt": "2026-09-27T10:00:00.000Z",
+        "recipes": [
+          {
+            "id": "r0123456789abcdef",
+            "ask": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "learnedBy": "teach",
+            "runId": "cmrun0001",
+            "taughtAt": "2026-09-27T10:00:00.000Z",
+            "declaredStart": {
+              "kind": "lobby-after-boot"
+            },
+            "stamp": {
+              "gameCommit": "3f2c1ab",
+              "kitVersion": "0.12.0"
+            },
+            "steps": [
+              {
+                "kind": "click",
+                "name": "Equip@Equipment",
+                "element": {
+                  "name": "Equip",
+                  "label": "Equipment",
+                  "handler": "LobbyView.OpenEquipment"
+                }
+              },
+              {
+                "kind": "hold",
+                "name": "Charge",
+                "seconds": 1.5
+              },
+              {
+                "kind": "hold-at",
+                "x": 0.5,
+                "y": 0.5,
+                "seconds": 1
+              },
+              {
+                "kind": "tap-at",
+                "x": 0.25,
+                "y": 0.75
+              },
+              {
+                "kind": "drag",
+                "x": 0.5,
+                "y": 0.8,
+                "x2": 0.5,
+                "y2": 0.2,
+                "seconds": 0.4
+              },
+              {
+                "kind": "cheat",
+                "command": "Skip 10 Levels"
+              },
+              {
+                "kind": "invoke-button",
+                "name": "Widget"
+              }
+            ],
+            "dismiss": [
+              "Close",
+              "Later"
+            ],
+            "arrival": [
+              "EqBack",
+              "EqGrid",
+              "Equipment"
+            ],
+            "confirm": {
+              "state": "confirmed",
+              "why": null,
+              "replayRan": true
+            },
+            "screens": [
+              {
+                "step": 0,
+                "role": "goal",
+                "roots": [
+                  "Ui/Equipment",
+                  "Ui/Lobby"
+                ],
+                "added": [
+                  "EqGrid"
+                ],
+                "buttons": [
+                  "EqBack"
+                ],
+                "thumbnailKey": "game-capture/cmrun0001/teach-step-0.jpg"
+              }
+            ],
+            "thumbnailKey": "game-capture/cmrun0001/teach-step-0.jpg"
+          }
+        ]
+      },
+      "ok": false
+    },
+    {
+      "name": "a hold longer than a minute is refused",
+      "doc": {
+        "schemaVersion": 1,
+        "gameId": "some-game",
+        "updatedAt": "2026-09-27T10:00:00.000Z",
+        "recipes": [
+          {
+            "id": "r0123456789abcdef",
+            "ask": "show me the equipment screen",
+            "learnedBy": "teach",
+            "runId": "cmrun0001",
+            "taughtAt": "2026-09-27T10:00:00.000Z",
+            "declaredStart": {
+              "kind": "lobby-after-boot"
+            },
+            "stamp": {
+              "gameCommit": "3f2c1ab",
+              "kitVersion": "0.12.0"
+            },
+            "steps": [
+              {
+                "kind": "click",
+                "name": "Equip@Equipment",
+                "element": {
+                  "name": "Equip",
+                  "label": "Equipment",
+                  "handler": "LobbyView.OpenEquipment"
+                }
+              },
+              {
+                "kind": "hold",
+                "name": "Charge",
+                "seconds": 61
+              },
+              {
+                "kind": "hold-at",
+                "x": 0.5,
+                "y": 0.5,
+                "seconds": 1
+              },
+              {
+                "kind": "tap-at",
+                "x": 0.25,
+                "y": 0.75
+              },
+              {
+                "kind": "drag",
+                "x": 0.5,
+                "y": 0.8,
+                "x2": 0.5,
+                "y2": 0.2,
+                "seconds": 0.4
+              },
+              {
+                "kind": "cheat",
+                "command": "Skip 10 Levels"
+              },
+              {
+                "kind": "invoke-button",
+                "name": "Widget"
+              }
+            ],
+            "dismiss": [
+              "Close",
+              "Later"
+            ],
+            "arrival": [
+              "EqBack",
+              "EqGrid",
+              "Equipment"
+            ],
+            "confirm": {
+              "state": "confirmed",
+              "why": null,
+              "replayRan": true
+            },
+            "screens": [
+              {
+                "step": 0,
+                "role": "goal",
+                "roots": [
+                  "Ui/Equipment",
+                  "Ui/Lobby"
+                ],
+                "added": [
+                  "EqGrid"
+                ],
+                "buttons": [
+                  "EqBack"
+                ],
+                "thumbnailKey": "game-capture/cmrun0001/teach-step-0.jpg"
+              }
+            ],
+            "thumbnailKey": "game-capture/cmrun0001/teach-step-0.jpg"
+          }
+        ]
+      },
+      "ok": false
+    },
+    {
+      "name": "a cheat step with no command is refused",
+      "doc": {
+        "schemaVersion": 1,
+        "gameId": "some-game",
+        "updatedAt": "2026-09-27T10:00:00.000Z",
+        "recipes": [
+          {
+            "id": "r0123456789abcdef",
+            "ask": "show me the equipment screen",
+            "learnedBy": "teach",
+            "runId": "cmrun0001",
+            "taughtAt": "2026-09-27T10:00:00.000Z",
+            "declaredStart": {
+              "kind": "lobby-after-boot"
+            },
+            "stamp": {
+              "gameCommit": "3f2c1ab",
+              "kitVersion": "0.12.0"
+            },
+            "steps": [
+              {
+                "kind": "click",
+                "name": "Equip@Equipment",
+                "element": {
+                  "name": "Equip",
+                  "label": "Equipment",
+                  "handler": "LobbyView.OpenEquipment"
+                }
+              },
+              {
+                "kind": "hold",
+                "name": "Charge",
+                "seconds": 1.5
+              },
+              {
+                "kind": "hold-at",
+                "x": 0.5,
+                "y": 0.5,
+                "seconds": 1
+              },
+              {
+                "kind": "tap-at",
+                "x": 0.25,
+                "y": 0.75
+              },
+              {
+                "kind": "drag",
+                "x": 0.5,
+                "y": 0.8,
+                "x2": 0.5,
+                "y2": 0.2,
+                "seconds": 0.4
+              },
+              {
+                "kind": "cheat",
+                "command": ""
+              },
+              {
+                "kind": "invoke-button",
+                "name": "Widget"
+              }
+            ],
+            "dismiss": [
+              "Close",
+              "Later"
+            ],
+            "arrival": [
+              "EqBack",
+              "EqGrid",
+              "Equipment"
+            ],
+            "confirm": {
+              "state": "confirmed",
+              "why": null,
+              "replayRan": true
+            },
+            "screens": [
+              {
+                "step": 0,
+                "role": "goal",
+                "roots": [
+                  "Ui/Equipment",
+                  "Ui/Lobby"
+                ],
+                "added": [
+                  "EqGrid"
+                ],
+                "buttons": [
+                  "EqBack"
+                ],
+                "thumbnailKey": "game-capture/cmrun0001/teach-step-0.jpg"
+              }
+            ],
+            "thumbnailKey": "game-capture/cmrun0001/teach-step-0.jpg"
+          }
+        ]
+      },
+      "ok": false
+    },
+    {
+      "name": "not an object at all is refused",
+      "doc": [
+        1,
+        2
+      ],
+      "ok": false
+    }
+  ],
+  "facts": {
+    "$comment": "the teach facts the kit posts (TeachJob.FactsJson over `state`) must be exactly `doc`, and the server's TeachFactsSchema must read `doc`; pressKeys / replayStepKeys are every key the kit writes on a press / a replay step, and the server's schema must know each one (an unknown key would be stripped silently).",
+    "pressKeys": [
+      "fired",
+      "at",
+      "selector",
+      "element",
+      "pressRoot",
+      "shared",
+      "topHit",
+      "handlerKind",
+      "command",
+      "x",
+      "y",
+      "x2",
+      "y2",
+      "seconds",
+      "before",
+      "after",
+      "thumbnail"
+    ],
+    "replayStepKeys": [
+      "pressed",
+      "refused",
+      "rebound",
+      "after"
+    ],
+    "state": {
+      "ask": "show me the equipment screen",
+      "declaredStart": {
+        "kind": "lobby-after-boot"
+      },
+      "authoredNames": [
+        "Lobby",
+        "Offer",
+        "Close",
+        "Equip",
+        "Equipment",
+        "EqGrid",
+        "EqBack"
+      ],
+      "presses": [
+        {
+          "fired": "click",
+          "selector": "Close",
+          "pressRoot": "Ui/Offer",
+          "shared": false,
+          "before": {
+            "roots": [
+              "Ui/Lobby",
+              "Ui/Offer"
+            ]
+          },
+          "after": {
+            "roots": [
+              "Ui/Lobby"
+            ],
+            "added": [],
+            "buttons": [
+              "Equip"
+            ]
+          },
+          "thumbnail": null
+        },
+        {
+          "fired": "click",
+          "selector": "Equip",
+          "pressRoot": "Ui/Lobby",
+          "shared": false,
+          "element": {
+            "name": "Equip",
+            "label": "Equipment",
+            "handler": null
+          },
+          "before": {
+            "roots": [
+              "Ui/Lobby"
+            ]
+          },
+          "after": {
+            "roots": [
+              "Ui/Equipment",
+              "Ui/Lobby"
+            ],
+            "added": [
+              "EqBack",
+              "EqGrid",
+              "Equipment",
+              "TweenFx(Clone)"
+            ],
+            "buttons": [
+              "EqBack"
+            ]
+          },
+          "thumbnail": "step-1.jpg"
+        }
+      ],
+      "replay": {
+        "ran": true,
+        "why": null,
+        "dismissed": [
+          "Close"
+        ],
+        "steps": [
+          {
+            "pressed": true,
+            "refused": null,
+            "rebound": null,
+            "after": {
+              "roots": [
+                "Ui/Equipment",
+                "Ui/Lobby"
+              ],
+              "added": [
+                "EqBack",
+                "EqGrid",
+                "Equipment"
+              ]
+            }
+          }
+        ]
+      },
+      "cancelled": 1,
+      "dropped": 0,
+      "gameCommit": "3f2c1ab0d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0",
+      "thumbnails": {
+        "step-1.jpg": "/9j/4AAQSkZJRg=="
+      }
+    },
+    "doc": {
+      "kitVersion": "0.12.0",
+      "outcome": "taught",
+      "why": null,
+      "gameCommit": "3f2c1ab0d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0",
+      "presses": [
+        {
+          "fired": "click",
+          "selector": "Close",
+          "pressRoot": "Ui/Offer",
+          "shared": false,
+          "before": {
+            "roots": [
+              "Ui/Lobby",
+              "Ui/Offer"
+            ]
+          },
+          "after": {
+            "roots": [
+              "Ui/Lobby"
+            ],
+            "added": [],
+            "buttons": [
+              "Equip"
+            ]
+          },
+          "thumbnail": null
+        },
+        {
+          "fired": "click",
+          "selector": "Equip",
+          "pressRoot": "Ui/Lobby",
+          "shared": false,
+          "element": {
+            "name": "Equip",
+            "label": "Equipment",
+            "handler": null
+          },
+          "before": {
+            "roots": [
+              "Ui/Lobby"
+            ]
+          },
+          "after": {
+            "roots": [
+              "Ui/Equipment",
+              "Ui/Lobby"
+            ],
+            "added": [
+              "EqBack",
+              "EqGrid",
+              "Equipment",
+              "TweenFx(Clone)"
+            ],
+            "buttons": [
+              "EqBack"
+            ]
+          },
+          "thumbnail": "step-1.jpg"
+        }
+      ],
+      "cancelled": 1,
+      "dropped": 0,
+      "replay": {
+        "ran": true,
+        "why": null,
+        "dismissed": [
+          "Close"
+        ],
+        "steps": [
+          {
+            "pressed": true,
+            "refused": null,
+            "rebound": null,
+            "after": {
+              "roots": [
+                "Ui/Equipment",
+                "Ui/Lobby"
+              ],
+              "added": [
+                "EqBack",
+                "EqGrid",
+                "Equipment"
+              ]
+            }
+          }
+        ]
+      },
+      "kitAnalysis": {
+        "confirmed": true,
+        "why": null
+      },
+      "thumbnails": {
+        "step-1.jpg": "/9j/4AAQSkZJRg=="
+      }
+    }
+  }
+}
