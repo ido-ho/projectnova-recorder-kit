@@ -1,0 +1,32 @@
+{
+  "note": "PROBABLE NOISE in a proof's snapshot (kit 0.13.4, Rogue Legend 2026-09-27): a value that changes on EVERY run, whatever the cheat did — a clock (timestamps, login times) or a value under a hashed key (a key the kit writes as its salted short hash, [#…], such as the game's LiveOps ids). Run by the website's probableNoise (apps/renderer/src/game-ads/learn/cheat-search.ts — rankProposals puts noise last and the cheat list marks it 'probable noise'). The rule reads the path BELOW the snapshot's root (the root's own names never count; with no root, every name after the first): each member name is split into words at case changes, digits and '_', and it is a CLOCK when a word is one of time, timestamp, timestamps, stamp, date, dates, second, seconds, nanosecond, nanoseconds, millisecond, milliseconds, ticks, updated, expire, expires, expiry, cooldown, elapsed, duration, clock — or its words joined hold 'lastlogin'. Otherwise it is HASHED when any step is a hashed key. WHOLE words, never parts: TimesRecleared, Tickets and Validated are counters and states, not clocks. Every path below the Rogue Legend root is a real field of its compiled UserData (Library/ScriptAssemblies/Assembly-CSharp.dll, read-only, 2026-09-27). 'noise' is 'clock', 'hashed' or null. (Until the fresh audit of 2026-09-28 the kit ran it too, to end a snapshot's wait early; a plain snapshot now always waits the whole settle time, so the kit needs no noise rule.) The file is DATA: a case one side disagrees with is a finding for both sides, never a line to edit here.",
+  "cases": [
+    { "root": "Assets.Scripts.FirebaseSystem.FirebaseSystem.UserData", "path": "Assets.Scripts.FirebaseSystem.FirebaseSystem.UserData.User.MatchesPlayed", "noise": null },
+    { "root": "Assets.Scripts.FirebaseSystem.FirebaseSystem.UserData", "path": "Assets.Scripts.FirebaseSystem.FirebaseSystem.UserData.MainLevels.Levels[0].DidClear", "noise": null },
+    { "root": "Assets.Scripts.FirebaseSystem.FirebaseSystem.UserData", "path": "Assets.Scripts.FirebaseSystem.FirebaseSystem.UserData.MainLevels.Levels[0].BestRecord", "noise": null },
+    { "root": "Assets.Scripts.FirebaseSystem.FirebaseSystem.UserData", "path": "Assets.Scripts.FirebaseSystem.FirebaseSystem.UserData.MainLevels.Levels[3].TimesRecleared", "noise": null },
+    { "root": "Assets.Scripts.FirebaseSystem.FirebaseSystem.UserData", "path": "Assets.Scripts.FirebaseSystem.FirebaseSystem.UserData.Currencies.Currencies[topaz].Amount", "noise": null },
+    { "root": "Assets.Scripts.FirebaseSystem.FirebaseSystem.UserData", "path": "Assets.Scripts.FirebaseSystem.FirebaseSystem.UserData.Currencies.Currencies[energy].RegenerationModel.RegenerationAmountPerTick", "noise": null },
+    { "root": "Assets.Scripts.FirebaseSystem.FirebaseSystem.UserData", "path": "Assets.Scripts.FirebaseSystem.FirebaseSystem.UserData.User.TotalAdsSeen", "noise": null },
+    { "root": "Assets.Scripts.FirebaseSystem.FirebaseSystem.UserData", "path": "Assets.Scripts.FirebaseSystem.FirebaseSystem.UserData.Items.UpgradesCount", "noise": null },
+    { "root": "Assets.Scripts.FirebaseSystem.FirebaseSystem.UserData", "path": "Assets.Scripts.FirebaseSystem.FirebaseSystem.UserData.User.LastLoginTime.Seconds", "noise": "clock" },
+    { "root": "Assets.Scripts.FirebaseSystem.FirebaseSystem.UserData", "path": "Assets.Scripts.FirebaseSystem.FirebaseSystem.UserData.User.LastLoginTime.Nanoseconds", "noise": "clock" },
+    { "root": "Assets.Scripts.FirebaseSystem.FirebaseSystem.UserData", "path": "Assets.Scripts.FirebaseSystem.FirebaseSystem.UserData.User.CreationTime.Seconds", "noise": "clock" },
+    { "root": "Assets.Scripts.FirebaseSystem.FirebaseSystem.UserData", "path": "Assets.Scripts.FirebaseSystem.FirebaseSystem.UserData.Currencies.Currencies[energy].RegenerationModel.RegenerationStartTimestamp.Seconds", "noise": "clock" },
+    { "root": "Assets.Scripts.FirebaseSystem.FirebaseSystem.UserData", "path": "Assets.Scripts.FirebaseSystem.FirebaseSystem.UserData.WinProgression.CurrentTimeStamp.Nanoseconds", "noise": "clock" },
+    { "root": "Assets.Scripts.FirebaseSystem.FirebaseSystem.UserData", "path": "Assets.Scripts.FirebaseSystem.FirebaseSystem.UserData.Purchases.PurchasesInfo[chest1].LastInteractionTimeStamp.Seconds", "noise": "clock" },
+    { "root": "Assets.Scripts.FirebaseSystem.FirebaseSystem.UserData", "path": "Assets.Scripts.FirebaseSystem.FirebaseSystem.UserData.Challenges.Challenges[2].Date.Seconds", "noise": "clock" },
+    { "root": "Assets.Scripts.FirebaseSystem.FirebaseSystem.UserData", "path": "Assets.Scripts.FirebaseSystem.FirebaseSystem.UserData.DateTracker.TrackedDates.Count", "noise": "clock" },
+    { "root": "Assets.Scripts.FirebaseSystem.FirebaseSystem.UserData", "path": "Assets.Scripts.FirebaseSystem.FirebaseSystem.UserData.Quests.Quests[#0a1b2c3d4e5f].Progress", "noise": "hashed" },
+    { "root": "Assets.Scripts.FirebaseSystem.FirebaseSystem.UserData", "path": "Assets.Scripts.FirebaseSystem.FirebaseSystem.UserData.Quests.Quests[#0a1b2c3d4e5f].EndDate.Seconds", "noise": "clock" },
+    { "root": "Game.Save", "path": "Game.Save.Player.LastLogin", "noise": "clock" },
+    { "root": "Game.Save", "path": "Game.Save.Player.lastLoginAt", "noise": "clock" },
+    { "root": "Game.Save", "path": "Game.Save.Shop.Tickets", "noise": null },
+    { "root": "Game.Save", "path": "Game.Save.Account.Validated", "noise": null },
+    { "root": "Game.Save", "path": "Game.Save.Timer.play_seconds", "noise": "clock" },
+    { "root": "Game.Save", "path": "Game.Save.Boosts[x2].CooldownLeft", "noise": "clock" },
+    { "root": "Game.TimeKeeper.Save", "path": "Game.TimeKeeper.Save.Coins", "noise": null },
+    { "root": null, "path": "Game.Save.Coins", "noise": null },
+    { "root": null, "path": "Game.Save.UpdatedAt", "noise": "clock" }
+  ]
+}
