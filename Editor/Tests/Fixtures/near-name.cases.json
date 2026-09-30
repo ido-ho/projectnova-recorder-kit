@@ -1,0 +1,777 @@
+{
+  "about": "THE NEAR-NAME RULE (kit 0.13.5). When a shot's step names something that is not on screen, which on-screen names are near enough to offer as 'Did you mean …?'. Run by BOTH sides: the kit's NearName (NearNameSharedCasesTests.cs — the director's log line on a failed press) and the website's near-name.ts (apps/api/src/game-capture/near-name.spec.ts — the Try's 'Did you mean' and the shots list's 'name not seen in the running game yet'). DATA, not a copy of either: a disagreement is a finding for both sides. THE RULE: (1) TOKENS — a name splits at every character that is not a letter or digit, at a lower→upper step (tabHeroes), at the last capital of a capital run followed by a lower-case letter (UIButton → ui, button), and between letters and digits; each token is lower-cased per character; the synonyms below are mapped (btn → button); repeats are dropped (first kept). (2) MATCH — a one-to-one pairing of the wanted name's tokens with the candidate's: first every exact pair, then every PREFIX pair (the shorter token is at least minPrefix characters, neither is all digits, and the longer starts with it — equip ~ equipment, pet ~ pets), each pass in the wanted name's token order taking the candidate's first free token. (3) SCORE = matched / (wanted tokens + candidate tokens − matched). (4) A candidate is OFFERED only when score ≥ threshold AND at least one matched pair has NEITHER token in roleTokens — a shared 'tab'-style role word alone is never enough. (4b) SAFETY: a candidate that would be offered is REFUSED — never offered, only counted as `unsafe` — when its printed selector or its label has a press-risk root (money, deleting, resetting, the account: the ONE list in press-risk.cases.json, which the kit enforces at every gated press), or when it INTRODUCES a spend noun (a word starting with one of spendNouns that no word of the wanted name starts with: Revive_Button → Revive_Gems_Button spends gems). A one-press fix must never turn a harmless press into a spending or destroying one; when every near name is unsafe the site says 'No safe button like X' and offers no press. (5) ROWS are the kit's ui-dump rows (ReflectionCheatBridge.OnScreenRows) or bare names; a row whose printed name does not reach it (the NotReachedMarker) or that prints an index (' #i (unstable …)') is never offered. (6) FIRST, the exact answer: a row whose name equals the wanted name ignoring case (and whose label contains the wanted @label, when one is given) means 'present' — or 'locked' when every such row is [locked] — and nothing is offered. (7) ORDER: score (highest first), then unlocked before locked, then (only for a pressed name, wants=clickable) a row with a real Selectable type before a [candidate: …] or bare row, then a row whose label matches (contains the wanted @label, or shares a non-role token with the wanted name), then the printed selector by ordinal code units; one row per selector; at most max. Scores are reported rounded to 3 places. THE THRESHOLD, justified by the cases below: 0.5 keeps every real rename the cases hold (Tab_Equipment → Equip_Tab 1.0, Tab_Pets → Pet_Tab 1.0, PlayButton → Play_Btn 1.0, Equipment → Equip_Tab 0.5) and refuses the one-content-token-of-three shape (Shop_Offer / Shop_Tab 0.333, Level1 / Level10 0.333) where the second word is what tells two buttons apart; the role rule — not the number — refuses Tab / Shop_Tab (0.5).",
+  "rule": {
+    "minPrefix": 3,
+    "threshold": 0.5,
+    "max": 3,
+    "synonyms": {
+      "btn": "button",
+      "bttn": "button",
+      "btns": "buttons"
+    },
+    "roleTokens": [
+      "tab",
+      "tabs",
+      "button",
+      "buttons",
+      "toggle",
+      "toggles",
+      "panel",
+      "panels",
+      "screen",
+      "screens",
+      "popup",
+      "popups",
+      "window",
+      "windows",
+      "menu",
+      "menus",
+      "view",
+      "views",
+      "page",
+      "pages",
+      "ui",
+      "icon",
+      "icons",
+      "bg"
+    ],
+    "spendNouns": [
+      "gem",
+      "coin",
+      "diamond",
+      "gold",
+      "cash",
+      "currency",
+      "crystal",
+      "topaz",
+      "ruby",
+      "credit",
+      "premium",
+      "wallet"
+    ]
+  },
+  "tokens": [
+    {
+      "name": "Tab_Equipment",
+      "tokens": [
+        "tab",
+        "equipment"
+      ]
+    },
+    {
+      "name": "Equip_Tab",
+      "tokens": [
+        "equip",
+        "tab"
+      ]
+    },
+    {
+      "name": "PlayButton",
+      "tokens": [
+        "play",
+        "button"
+      ]
+    },
+    {
+      "name": "Play_Btn",
+      "tokens": [
+        "play",
+        "button"
+      ]
+    },
+    {
+      "name": "UIButton",
+      "tokens": [
+        "ui",
+        "button"
+      ]
+    },
+    {
+      "name": "HTTPServer",
+      "tokens": [
+        "http",
+        "server"
+      ]
+    },
+    {
+      "name": "Level10Btn",
+      "tokens": [
+        "level",
+        "10",
+        "button"
+      ]
+    },
+    {
+      "name": "shop-offer v2",
+      "tokens": [
+        "shop",
+        "offer",
+        "v",
+        "2"
+      ]
+    },
+    {
+      "name": "Tab_Tab",
+      "tokens": [
+        "tab"
+      ]
+    },
+    {
+      "name": "Heroes_Screen",
+      "tokens": [
+        "heroes",
+        "screen"
+      ]
+    },
+    {
+      "name": "__",
+      "tokens": []
+    }
+  ],
+  "score": [
+    {
+      "about": "RL 2026-09-28: the proposed name and the real tab",
+      "a": "Tab_Equipment",
+      "b": "Equip_Tab",
+      "matched": 2,
+      "union": 2,
+      "score": 1,
+      "offered": true
+    },
+    {
+      "about": "RL: Tab_Heroes shares only the role word with every real tab",
+      "a": "Tab_Heroes",
+      "b": "Adventure_Tab",
+      "matched": 1,
+      "union": 3,
+      "score": 0.333,
+      "offered": false
+    },
+    {
+      "a": "Tab_Heroes",
+      "b": "Talents_Tab",
+      "matched": 1,
+      "union": 3,
+      "score": 0.333,
+      "offered": false
+    },
+    {
+      "a": "Tab_Heroes",
+      "b": "Pet_Tab",
+      "matched": 1,
+      "union": 3,
+      "score": 0.333,
+      "offered": false
+    },
+    {
+      "a": "Tab_Heroes",
+      "b": "Equip_Tab",
+      "matched": 1,
+      "union": 3,
+      "score": 0.333,
+      "offered": false
+    },
+    {
+      "a": "Tab_Heroes",
+      "b": "Shop_Tab",
+      "matched": 1,
+      "union": 3,
+      "score": 0.333,
+      "offered": false
+    },
+    {
+      "about": "at the threshold on the role word ALONE — refused by the role rule, not the number",
+      "a": "Tab",
+      "b": "Shop_Tab",
+      "matched": 1,
+      "union": 2,
+      "score": 0.5,
+      "offered": false
+    },
+    {
+      "about": "exactly the threshold, on a content word — offered",
+      "a": "Shop",
+      "b": "Shop_Tab",
+      "matched": 1,
+      "union": 2,
+      "score": 0.5,
+      "offered": true
+    },
+    {
+      "about": "just below the threshold — the second word tells them apart",
+      "a": "Shop_Offer",
+      "b": "Shop_Tab",
+      "matched": 1,
+      "union": 3,
+      "score": 0.333,
+      "offered": false
+    },
+    {
+      "about": "prefix of length 3: pet ~ pets",
+      "a": "Tab_Pets",
+      "b": "Pet_Tab",
+      "matched": 2,
+      "union": 2,
+      "score": 1,
+      "offered": true
+    },
+    {
+      "about": "the btn synonym",
+      "a": "PlayButton",
+      "b": "Play_Btn",
+      "matched": 2,
+      "union": 2,
+      "score": 1,
+      "offered": true
+    },
+    {
+      "about": "digits match exactly, never by prefix",
+      "a": "Level1",
+      "b": "Level10",
+      "matched": 1,
+      "union": 3,
+      "score": 0.333,
+      "offered": false
+    },
+    {
+      "about": "a 2-character token is never a prefix",
+      "a": "Ab_Close",
+      "b": "Abc_Close",
+      "matched": 1,
+      "union": 3,
+      "score": 0.333,
+      "offered": false
+    },
+    {
+      "a": "Eq_Tab",
+      "b": "Equip_Tab",
+      "matched": 1,
+      "union": 3,
+      "score": 0.333,
+      "offered": false
+    },
+    {
+      "a": "Heroes_Screen",
+      "b": "Heroes_Panel",
+      "matched": 1,
+      "union": 3,
+      "score": 0.333,
+      "offered": false
+    },
+    {
+      "a": "Equipment",
+      "b": "Equip_Tab",
+      "matched": 1,
+      "union": 2,
+      "score": 0.5,
+      "offered": true
+    },
+    {
+      "about": "one-to-one: the candidate's shop pairs once",
+      "a": "Shop_Shopping",
+      "b": "Shop",
+      "matched": 1,
+      "union": 2,
+      "score": 0.5,
+      "offered": true
+    },
+    {
+      "a": "__",
+      "b": "Shop",
+      "matched": 0,
+      "union": 1,
+      "score": 0,
+      "offered": false
+    }
+  ],
+  "rows": [
+    {
+      "row": "Equip_Tab",
+      "selector": "Equip_Tab",
+      "name": "Equip_Tab",
+      "label": null,
+      "role": null,
+      "locked": false,
+      "reaches": true,
+      "indexed": false
+    },
+    {
+      "row": "Equip_Tab [Button]",
+      "selector": "Equip_Tab",
+      "name": "Equip_Tab",
+      "label": null,
+      "role": "Button",
+      "locked": false,
+      "reaches": true,
+      "indexed": false
+    },
+    {
+      "row": "Shop_Tab [candidate: Image+AnimatedTabDisplay]  \"Shop\"",
+      "selector": "Shop_Tab",
+      "name": "Shop_Tab",
+      "label": "Shop",
+      "role": "candidate",
+      "locked": false,
+      "reaches": true,
+      "indexed": false
+    },
+    {
+      "row": "Talents_Tab [Button] [locked]  \"Talents\"",
+      "selector": "Talents_Tab",
+      "name": "Talents_Tab",
+      "label": "Talents",
+      "role": "Button",
+      "locked": true,
+      "reaches": true,
+      "indexed": false
+    },
+    {
+      "row": "Button@Level 1 [Button]  \"Level 1\"",
+      "selector": "Button@Level 1",
+      "name": "Button",
+      "label": "Level 1",
+      "role": "Button",
+      "locked": false,
+      "reaches": true,
+      "indexed": false
+    },
+    {
+      "row": "Button #1 (unstable — index order is not guaranteed) [Button]",
+      "selector": "Button",
+      "name": "Button",
+      "label": null,
+      "role": "Button",
+      "locked": false,
+      "reaches": true,
+      "indexed": true
+    },
+    {
+      "row": "Close [Button]  (not what this name reaches)",
+      "selector": "Close",
+      "name": "Close",
+      "label": null,
+      "role": "Button",
+      "locked": false,
+      "reaches": false,
+      "indexed": false
+    },
+    {
+      "row": "Close [Button]  \"X\"  (not what this name reaches)",
+      "selector": "Close",
+      "name": "Close",
+      "label": "X",
+      "role": "Button",
+      "locked": false,
+      "reaches": false,
+      "indexed": false
+    },
+    {
+      "row": "Pet_Tab [Toggle]",
+      "selector": "Pet_Tab",
+      "name": "Pet_Tab",
+      "label": null,
+      "role": "Toggle",
+      "locked": false,
+      "reaches": true,
+      "indexed": false
+    }
+  ],
+  "suggest": [
+    {
+      "about": "RL 2026-09-28, probe GameCaptureRun cmul47zkr02njh79uxgepv901 — the on-screen names VERBATIM as the owner read them off the box (bare names; the rows' type brackets were not copied)",
+      "target": "Tab_Equipment",
+      "wants": "clickable",
+      "onScreen": [
+        "Adventure_Tab",
+        "Equip_Tab",
+        "Pet_Tab",
+        "Shop_Tab",
+        "Talents_Tab"
+      ],
+      "state": "absent",
+      "suggestions": [
+        {
+          "selector": "Equip_Tab",
+          "score": 1
+        }
+      ],
+      "unsafe": 0
+    },
+    {
+      "about": "RL verbatim: there is no Heroes tab — Adventure_Tab / Talents_Tab share only 'tab'",
+      "target": "Tab_Heroes",
+      "wants": "clickable",
+      "onScreen": [
+        "Adventure_Tab",
+        "Equip_Tab",
+        "Pet_Tab",
+        "Shop_Tab",
+        "Talents_Tab"
+      ],
+      "state": "absent",
+      "suggestions": [],
+      "unsafe": 0
+    },
+    {
+      "about": "RL verbatim: lobby-pets-summon's Pet_Tab is on screen",
+      "target": "Pet_Tab",
+      "wants": "clickable",
+      "onScreen": [
+        "Adventure_Tab",
+        "Equip_Tab",
+        "Pet_Tab",
+        "Shop_Tab",
+        "Talents_Tab"
+      ],
+      "state": "present",
+      "suggestions": [],
+      "unsafe": 0
+    },
+    {
+      "about": "RL verbatim: the until target of lobby-heroes-roster",
+      "target": "Heroes_Screen",
+      "wants": "any",
+      "onScreen": [
+        "Adventure_Tab",
+        "Equip_Tab",
+        "Pet_Tab",
+        "Shop_Tab",
+        "Talents_Tab"
+      ],
+      "state": "absent",
+      "suggestions": [],
+      "unsafe": 0
+    },
+    {
+      "about": "a role word alone never suggests",
+      "target": "Tab",
+      "wants": "clickable",
+      "onScreen": [
+        "Adventure_Tab",
+        "Equip_Tab",
+        "Pet_Tab",
+        "Shop_Tab",
+        "Talents_Tab"
+      ],
+      "state": "absent",
+      "suggestions": [],
+      "unsafe": 0
+    },
+    {
+      "about": "RL RECONSTRUCTED as the kit would print rows (the type bracket is a guess — the owner copied names only)",
+      "target": "Tab_Equipment",
+      "wants": "clickable",
+      "onScreen": [
+        "Adventure_Tab [Button]",
+        "Equip_Tab [Button]",
+        "Pet_Tab [Button]",
+        "Shop_Tab [Button]",
+        "Talents_Tab [Button]"
+      ],
+      "state": "absent",
+      "suggestions": [
+        {
+          "selector": "Equip_Tab",
+          "score": 1
+        }
+      ],
+      "unsafe": 0
+    },
+    {
+      "about": "present ignores case, as the kit's finder does",
+      "target": "equip_tab",
+      "wants": "clickable",
+      "onScreen": [
+        "Adventure_Tab",
+        "Equip_Tab"
+      ],
+      "state": "present",
+      "suggestions": [],
+      "unsafe": 0
+    },
+    {
+      "target": "Talents_Tab",
+      "wants": "clickable",
+      "onScreen": [
+        "Talents_Tab [Button] [locked]  \"Talents\""
+      ],
+      "state": "locked",
+      "suggestions": [],
+      "unsafe": 0
+    },
+    {
+      "about": "one unlocked twin makes it present",
+      "target": "Talents_Tab",
+      "wants": "clickable",
+      "onScreen": [
+        "Talents_Tab [Button] [locked]",
+        "Talents_Tab@Go [Button]  \"Go\""
+      ],
+      "state": "present",
+      "suggestions": [],
+      "unsafe": 0
+    },
+    {
+      "about": "a label that does not match is not present; the same name with its printed label is offered",
+      "target": "Equip_Tab@Weapons",
+      "wants": "clickable",
+      "onScreen": [
+        "Equip_Tab@Gear [Button]  \"Gear\"",
+        "Equip_Tab@Pets [Button]  \"Pets\""
+      ],
+      "state": "absent",
+      "suggestions": [
+        {
+          "selector": "Equip_Tab@Gear",
+          "score": 1
+        },
+        {
+          "selector": "Equip_Tab@Pets",
+          "score": 1
+        }
+      ],
+      "unsafe": 0
+    },
+    {
+      "about": "tie-break on role: a real Selectable before a candidate, for a pressed name",
+      "target": "Shop_Button",
+      "wants": "clickable",
+      "onScreen": [
+        "Btn_Shop [candidate: Image]",
+        "Shop_Btn [Button]"
+      ],
+      "state": "absent",
+      "suggestions": [
+        {
+          "selector": "Shop_Btn",
+          "score": 1
+        },
+        {
+          "selector": "Btn_Shop",
+          "score": 1
+        }
+      ],
+      "unsafe": 0
+    },
+    {
+      "about": "no role tie-break for a waited-for name: ordinal",
+      "target": "Shop_Button",
+      "wants": "any",
+      "onScreen": [
+        "Btn_Shop [candidate: Image]",
+        "Shop_Btn [Button]"
+      ],
+      "state": "absent",
+      "suggestions": [
+        {
+          "selector": "Btn_Shop",
+          "score": 1
+        },
+        {
+          "selector": "Shop_Btn",
+          "score": 1
+        }
+      ],
+      "unsafe": 0
+    },
+    {
+      "about": "tie-break on label beats ordinal",
+      "target": "Start_Play",
+      "wants": "clickable",
+      "onScreen": [
+        "Play_Start_New [Button]",
+        "Play_Start_Old [Button]  \"Play\""
+      ],
+      "state": "absent",
+      "suggestions": [
+        {
+          "selector": "Play_Start_Old",
+          "score": 0.667
+        },
+        {
+          "selector": "Play_Start_New",
+          "score": 0.667
+        }
+      ],
+      "unsafe": 0
+    },
+    {
+      "about": "score first, then at most max — Shop_Buy is near (0.5) but UNSAFE (buy): never offered",
+      "target": "Shop",
+      "wants": "clickable",
+      "onScreen": [
+        "Shop_Tab [Button]",
+        "Shop_Close [Button]",
+        "Shop_Offer [Button]",
+        "Shop_Buy [Button]",
+        "Shopping [Button]"
+      ],
+      "state": "absent",
+      "suggestions": [
+        {
+          "selector": "Shopping",
+          "score": 1
+        },
+        {
+          "selector": "Shop_Close",
+          "score": 0.5
+        },
+        {
+          "selector": "Shop_Offer",
+          "score": 0.5
+        }
+      ],
+      "unsafe": 1
+    },
+    {
+      "about": "never a row whose name does not reach it or that prints an index; a locked row is offered, flagged",
+      "target": "Close_Btn",
+      "wants": "clickable",
+      "onScreen": [
+        "Close [Button]  (not what this name reaches)",
+        "Close #1 (unstable — index order is not guaranteed) [Button]",
+        "Close_Button [Button] [locked]",
+        "Close_X [Button]"
+      ],
+      "state": "absent",
+      "suggestions": [
+        {
+          "selector": "Close_Button",
+          "score": 1,
+          "locked": true
+        }
+      ],
+      "unsafe": 0
+    },
+    {
+      "about": "unlocked before locked at the same score",
+      "target": "Close_Btn",
+      "wants": "clickable",
+      "onScreen": [
+        "Close_Button [Button] [locked]",
+        "Button_Close [Button]"
+      ],
+      "state": "absent",
+      "suggestions": [
+        {
+          "selector": "Button_Close",
+          "score": 1
+        },
+        {
+          "selector": "Close_Button",
+          "score": 1,
+          "locked": true
+        }
+      ],
+      "unsafe": 0
+    },
+    {
+      "about": "nothing on screen",
+      "target": "Tab_Equipment",
+      "wants": "clickable",
+      "onScreen": [],
+      "state": "absent",
+      "suggestions": [],
+      "unsafe": 0
+    },
+    {
+      "about": "audit 2026-09-28: a near name that spends or destroys is never offered",
+      "target": "Inventory",
+      "wants": "clickable",
+      "onScreen": [
+        "ClearInventory [Button]"
+      ],
+      "state": "absent",
+      "suggestions": [],
+      "unsafe": 1
+    },
+    {
+      "about": "audit 2026-09-28: a near name that spends or destroys is never offered",
+      "target": "Save",
+      "wants": "clickable",
+      "onScreen": [
+        "DeleteSave [Button]"
+      ],
+      "state": "absent",
+      "suggestions": [],
+      "unsafe": 1
+    },
+    {
+      "about": "audit 2026-09-28: a near name that spends or destroys is never offered",
+      "target": "Gems",
+      "wants": "clickable",
+      "onScreen": [
+        "BuyGems [Button]"
+      ],
+      "state": "absent",
+      "suggestions": [],
+      "unsafe": 1
+    },
+    {
+      "about": "audit 2026-09-28: a near name that spends or destroys is never offered",
+      "target": "Progress_Button",
+      "wants": "clickable",
+      "onScreen": [
+        "ResetProgressButton [Button]"
+      ],
+      "state": "absent",
+      "suggestions": [],
+      "unsafe": 1
+    },
+    {
+      "about": "audit 2026-09-28: a near name that spends or destroys is never offered",
+      "target": "Revive_Button",
+      "wants": "clickable",
+      "onScreen": [
+        "Revive_Gems_Button [Button]"
+      ],
+      "state": "absent",
+      "suggestions": [],
+      "unsafe": 1
+    },
+    {
+      "about": "audit 2026-09-28: a near name that spends or destroys is never offered",
+      "target": "Coins_Tab",
+      "wants": "clickable",
+      "onScreen": [
+        "Buy_Coins_Tab [Button]"
+      ],
+      "state": "absent",
+      "suggestions": [],
+      "unsafe": 1
+    },
+    {
+      "about": "a spend noun the WANTED name already has is not introduced — offered",
+      "target": "Gems_Tab",
+      "wants": "clickable",
+      "onScreen": [
+        "Gem_Shop_Tab [Button]"
+      ],
+      "state": "absent",
+      "suggestions": [
+        {
+          "selector": "Gem_Shop_Tab",
+          "score": 0.667
+        }
+      ],
+      "unsafe": 0
+    },
+    {
+      "about": "a risky LABEL refuses the row too; the safe twin is still offered",
+      "target": "Tab_Equipment",
+      "wants": "clickable",
+      "onScreen": [
+        "Equip_Tab@Buy now [Button]  \"Buy now\"",
+        "Equip_Tab@Gear [Button]  \"Gear\""
+      ],
+      "state": "absent",
+      "suggestions": [
+        {
+          "selector": "Equip_Tab@Gear",
+          "score": 1
+        }
+      ],
+      "unsafe": 1
+    }
+  ]
+}
