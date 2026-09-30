@@ -1,0 +1,5 @@
+{
+  "about": "THE JOB KINDS (kit 0.14.3, deep review KIT-14/KIT-6, invariant 192) — ONE list, read by BOTH sides. 'kinds' is every kind the API can hand out (apps/api studio-capture-job.ts StudioJobKind — the keys of MIN_KIT_VERSION_FOR_KIND) and every kind this kit has a handler for (CaptureJob.IsHandled): a kind added on one side only turns the other side's run of this file red. 'kindsNeedingBinding' is the API's KINDS_NEEDING_WORKSPACE_BINDING and the kit's WorkspaceGuard.KindsNeedingBinding: never handed to, and (since kit 0.14.3) refused by, a Unity project not bound to the job's workspace. Held by apps/api kit-binding.spec.ts and the kit's JobKindsSharedCasesTests.",
+  "kinds": ["capture", "self-test", "export", "sync-nova", "probe", "cheat-search", "cheat-proof", "teach", "auto-try", "recipe-try"],
+  "kindsNeedingBinding": ["export", "sync-nova", "probe", "cheat-search", "cheat-proof", "teach", "auto-try", "recipe-try"]
+}

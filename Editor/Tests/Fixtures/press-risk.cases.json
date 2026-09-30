@@ -1,0 +1,203 @@
+{
+  "about": "THE PRESS-RISK WORDS — ONE list of word roots that make a button (or a command) sound like money, deleting, resetting or the account. The kit ENFORCES it at every gated press (PressGuard.RiskyRoot — PressGuardSharedCasesTests.cs) and in CheatRisk; the website reads the SAME roots: the tick list's risk (renderer tick-list.ts riskyRootOf), the reader's DESTRUCTIVE? mark (renderer lane-digest.ts soundsDestructive: destructiveRoots only), and the near-name rule, which never offers a risky name as a one-press fix (apps/api press-risk.ts, near-name.ts). Each side keeps its constants in code and its spec holds them EQUAL to this file, so the copies cannot drift. Words split at non-letters and camelCase humps; a root matches the START of a word; 'log out' / 'sign out' read as one word in every spelling. Revive_Gems_Button has no risky ROOT: the near-name rule refuses it by its own spend-noun rule (near-name.cases.json), not by this list.",
+  "destructiveRoots": [
+    "reset",
+    "wipe",
+    "delet",
+    "eras",
+    "purg",
+    "clear",
+    "destroy",
+    "remov",
+    "unlink"
+  ],
+  "moneyAndAccountRoots": [
+    "buy",
+    "purchas",
+    "pay",
+    "spend",
+    "iap",
+    "subscri",
+    "redeem",
+    "restor",
+    "checkout",
+    "logout",
+    "signout",
+    "account"
+  ],
+  "cheatRoots": [
+    "give",
+    "grant",
+    "gift",
+    "server"
+  ],
+  "cheatRootsAbout": "Kit 0.14.3 (deep review KIT-14): CheatRisk.CheatRoots — the cheat roots added to the press roots above for a COMMAND's risk (CheatRisk.RootOf); the website's tick-list.ts CHEAT_ROOTS. Both held to this list.",
+  "riskyKinds": [
+    "give",
+    "reset",
+    "purchase"
+  ],
+  "riskyKindsAbout": "Kit 0.14.3 (KIT-14): CheatRisk.RiskyKinds — the tick-list kinds that are risky; the website's tick-list.ts RISKY_KINDS.",
+  "cases": [
+    {
+      "text": "DeleteAccount",
+      "root": "delet"
+    },
+    {
+      "text": "Buy_All_Packs@Buy All Packs!",
+      "root": "buy"
+    },
+    {
+      "text": "RestorePurchases",
+      "root": "restor"
+    },
+    {
+      "text": "Settings@Log out",
+      "root": "logout"
+    },
+    {
+      "text": "ResetDevUser",
+      "root": "reset"
+    },
+    {
+      "text": "IAPButton",
+      "root": "iap"
+    },
+    {
+      "text": "Btn@Subscribe",
+      "root": "subscri"
+    },
+    {
+      "text": "AccountPopup",
+      "root": "account"
+    },
+    {
+      "text": "LogOutButton",
+      "root": "logout"
+    },
+    {
+      "text": "SignOut",
+      "root": "signout"
+    },
+    {
+      "text": "Sign-out",
+      "root": "signout"
+    },
+    {
+      "text": "Log_out",
+      "root": "logout"
+    },
+    {
+      "text": "Btn_Sign_out",
+      "root": "signout"
+    },
+    {
+      "text": "Settings@Sign Out",
+      "root": "signout"
+    },
+    {
+      "text": "Pay_Button",
+      "root": "pay"
+    },
+    {
+      "text": "SpendGems",
+      "root": "spend"
+    },
+    {
+      "text": "ClearInventory",
+      "root": "clear"
+    },
+    {
+      "text": "DeleteSave",
+      "root": "delet"
+    },
+    {
+      "text": "BuyGems",
+      "root": "buy"
+    },
+    {
+      "text": "ResetProgressButton",
+      "root": "reset"
+    },
+    {
+      "text": "Buy_Coins_Tab",
+      "root": "buy"
+    },
+    {
+      "text": "Shop_Buy",
+      "root": "buy"
+    },
+    {
+      "text": "Checkout_Btn",
+      "root": "checkout"
+    },
+    {
+      "text": "WipeData",
+      "root": "wipe"
+    },
+    {
+      "text": "Close_Button",
+      "root": null
+    },
+    {
+      "text": "Equip_Tab@Equip",
+      "root": null
+    },
+    {
+      "text": "CloseArea",
+      "root": null
+    },
+    {
+      "text": "Tab_Daily_Button@Daily",
+      "root": null
+    },
+    {
+      "text": "Preset",
+      "root": null
+    },
+    {
+      "text": "Display",
+      "root": null
+    },
+    {
+      "text": "Adventure_Tab@Adventure",
+      "root": null
+    },
+    {
+      "text": "LoginButton",
+      "root": null
+    },
+    {
+      "text": "Signal_Tab",
+      "root": null
+    },
+    {
+      "text": "LogsOutbox",
+      "root": null
+    },
+    {
+      "text": "Designer@Sign in",
+      "root": null
+    },
+    {
+      "text": "Revive_Gems_Button",
+      "root": null
+    },
+    {
+      "text": "Shop_Tab",
+      "root": null
+    },
+    {
+      "text": "Inventory",
+      "root": null
+    },
+    {
+      "text": "Progress_Button",
+      "root": null
+    },
+    {
+      "text": "Replay_Button",
+      "root": null
+    }
+  ]
+}
