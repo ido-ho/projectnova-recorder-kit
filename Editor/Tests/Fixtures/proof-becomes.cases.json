@@ -1,0 +1,16 @@
+{
+  "note": "WHEN A VALUE IS THE VALUE A `becomes` CHECK NAMES (kit 0.13.4). Run by BOTH sides: the kit's CheatCheck.SameValue (a watched or get `becomes` check ends the proof's wait when the value is the target) and the website's sameValue (apps/renderer/src/game-ads/learn/tick-list.ts — gradeProof's becomesVerdict: proven only when the value was NOT the target before and IS after). Two numbers are the same when they are equal, or differ by at most 1e-6 of the larger magnitude (a float currency read back as 0.30000000000000004 is 0.3). Zero is only the same as zero: the tolerance is relative, never absolute. The file is DATA: a case one side disagrees with is a finding for both sides.",
+  "relTolerance": 1e-6,
+  "cases": [
+    { "a": 10000, "b": 10000, "same": true },
+    { "a": 0, "b": 0, "same": true },
+    { "a": 0.30000000000000004, "b": 0.3, "same": true },
+    { "a": -2.5, "b": -2.5000000001, "same": true },
+    { "a": 10000.005, "b": 10000, "same": true },
+    { "a": 10000.1, "b": 10000, "same": false },
+    { "a": 9999, "b": 10000, "same": false },
+    { "a": 1e-9, "b": 0, "same": false },
+    { "a": 2.5, "b": -2.5, "same": false },
+    { "a": 1000000000000000, "b": 999999999999999, "same": true }
+  ]
+}

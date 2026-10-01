@@ -1,0 +1,46 @@
+{
+  "about": "THE RELAY'S PATHS (kit 0.14.3, deep review KIT-14) — RelayPaths.cs and the website's relay-protocol.ts both said 'byte-for-byte, change both or neither' and nothing held them to it. Each case is a project whose relay root is decided by which status.json exists (none → Library/AdRelay; only the legacy AdRelay/status.json → AdRelay), and each path relative to the project, '/'-separated. Held by the kit's RelayPathsTests and the renderer's relay-protocol.spec.ts.",
+  "cases": [
+    {
+      "name": "a fresh project: the preferred root under Library/",
+      "statusAt": null,
+      "paths": {
+        "root": "Library/AdRelay",
+        "commands": "Library/AdRelay/commands",
+        "results": "Library/AdRelay/results",
+        "processed": "Library/AdRelay/processed",
+        "screenshots": "Library/AdRelay/screenshots",
+        "visionRequests": "Library/AdRelay/vision/requests",
+        "visionResponses": "Library/AdRelay/vision/responses",
+        "statusFile": "Library/AdRelay/status.json",
+        "command(c1)": "Library/AdRelay/commands/c1.json",
+        "result(c1)": "Library/AdRelay/results/c1.json"
+      }
+    },
+    {
+      "name": "a pre-0.3 project whose relay still lives in the project-root AdRelay/",
+      "statusAt": "AdRelay/status.json",
+      "paths": {
+        "root": "AdRelay",
+        "commands": "AdRelay/commands",
+        "results": "AdRelay/results",
+        "processed": "AdRelay/processed",
+        "screenshots": "AdRelay/screenshots",
+        "visionRequests": "AdRelay/vision/requests",
+        "visionResponses": "AdRelay/vision/responses",
+        "statusFile": "AdRelay/status.json",
+        "command(c1)": "AdRelay/commands/c1.json",
+        "result(c1)": "AdRelay/results/c1.json"
+      }
+    },
+    {
+      "name": "both exist: the preferred root wins",
+      "statusAt": "Library/AdRelay/status.json+AdRelay/status.json",
+      "paths": {
+        "root": "Library/AdRelay",
+        "statusFile": "Library/AdRelay/status.json",
+        "command(c1)": "Library/AdRelay/commands/c1.json"
+      }
+    }
+  ]
+}

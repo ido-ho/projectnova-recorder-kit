@@ -1,0 +1,59 @@
+{
+  "$comment": "plan v3.1 phase 6.2 — ONE list of binding pairs, run by BOTH sides: the kit's CaptureStart.BindingsFromClaimBody (which calls ShotBinding.ValidateName/ValidateValue) and the API's cleanBindings. 'keep' = the pair survives the claim. A value over 120 characters is the API's own extra cap (the kit has none) and is not listed here.",
+  "pairs": [
+    {
+      "name": "hero",
+      "value": "hero.draco",
+      "keep": true
+    },
+    {
+      "name": "level",
+      "value": "5",
+      "keep": true
+    },
+    {
+      "name": "skinId",
+      "value": "skin_02-b",
+      "keep": true
+    },
+    {
+      "name": "Hero",
+      "value": "x",
+      "keep": false,
+      "$why": "names are lowerCamelCase"
+    },
+    {
+      "name": "hero_id",
+      "value": "x",
+      "keep": false,
+      "$why": "no underscore in a name"
+    },
+    {
+      "name": "hero",
+      "value": "two words",
+      "keep": false,
+      "$why": "the bridge splits on spaces"
+    },
+    {
+      "name": "hero",
+      "value": "Button@Label",
+      "keep": false,
+      "$why": "'@' would forge a label selector"
+    },
+    {
+      "name": "hero",
+      "value": "{v}",
+      "keep": false
+    },
+    {
+      "name": "hero",
+      "value": "",
+      "keep": false
+    },
+    {
+      "name": "hero",
+      "value": "a\nb",
+      "keep": false
+    }
+  ]
+}

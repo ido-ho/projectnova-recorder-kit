@@ -1,0 +1,23 @@
+{
+  "about": "v3 P0 — THE SELECTOR SEAM. How a `Name@Label` press name is split, and when a label matches an element's visible label. Run by BOTH sides: the kit's UguiDriver.ParseSelector / LabelMatches (SelectorSharedCasesTests.cs) and the website shots gate's parseSelector / labelMatches (renderer lane-shots.spec.ts). DATA, not a copy of either: a disagreement is a finding for both sides.",
+  "parse": [
+    { "selector": "Button@Level 1", "name": "Button", "label": "Level 1" },
+    { "selector": "Button", "name": "Button", "label": null },
+    { "selector": "Button@", "name": "Button", "label": null },
+    { "selector": " Button @ Level 1 ", "name": "Button", "label": "Level 1" },
+    { "selector": "a@b@c", "name": "a", "label": "b@c" },
+    { "selector": "@Shop", "name": "", "label": "Shop" },
+    { "selector": "Close_Button@  ", "name": "Close_Button", "label": null }
+  ],
+  "label": [
+    { "label": "Shop", "wanted": "shop", "match": true },
+    { "label": "Level 12", "wanted": "Level 1", "match": true },
+    { "label": "No thanks", "wanted": "THANKS", "match": true },
+    { "label": "Shop", "wanted": "Sell", "match": false },
+    { "label": "OK", "wanted": "OK!", "match": false },
+    { "label": "Straße", "wanted": "STRAßE", "match": true },
+    { "label": "Straße", "wanted": "STRASSE", "match": false },
+    { "label": "Café", "wanted": "CAFÉ", "match": true },
+    { "label": "Café", "wanted": "CAFE", "match": false }
+  ]
+}
