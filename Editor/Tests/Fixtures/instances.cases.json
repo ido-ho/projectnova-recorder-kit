@@ -1,0 +1,348 @@
+{
+  "$comment": "Plan v3.1 phase 6.2(c) \u2014 a bound INSTANCE of a shot with parameters. The renderer's materializeInstance (shot-instance.ts) writes the values into the template; the kit's ShotBinding.TryApply binds the same template at run time. Every 'expected' here must equal BOTH: the renderer spec compares the whole shot, the kit's ShotBindingTests compares each bound text. Every template lints clean (shots-lint): a shot's COMMANDS are fixed (a placeholder in a setup or cheat is refused before it is sent), so in a real file the values land in click and hold NAMES. 'error' cases are the renderer's refusals (the kit is never sent such a shot).",
+  "cases": [
+    {
+      "name": "a click name and a hold name are bound; a fixed cheat, the settle, an until and a vision prompt are left as written",
+      "template": {
+        "name": "hero-intro",
+        "parameters": [
+          "hero"
+        ],
+        "setup": [
+          "skip-tutorial"
+        ],
+        "steps": [
+          {
+            "kind": "click",
+            "name": "Hero_{hero}",
+            "until": {
+              "kind": "present",
+              "name": "Card_{hero}"
+            }
+          },
+          {
+            "kind": "cheatUntil",
+            "command": "open-roster",
+            "until": {
+              "kind": "present",
+              "name": "Board"
+            }
+          },
+          {
+            "kind": "hold",
+            "name": "Card_{hero}",
+            "seconds": 1
+          },
+          {
+            "kind": "vision",
+            "prompt": "is {hero} on screen?"
+          },
+          {
+            "kind": "wait",
+            "seconds": 1
+          }
+        ],
+        "settle": {
+          "kind": "present",
+          "name": "Card_{hero}"
+        }
+      },
+      "values": [
+        {
+          "name": "hero",
+          "value": "draco"
+        }
+      ],
+      "expected": {
+        "name": "hero-intro.draco",
+        "setup": [
+          "skip-tutorial"
+        ],
+        "steps": [
+          {
+            "kind": "click",
+            "name": "Hero_draco",
+            "until": {
+              "kind": "present",
+              "name": "Card_{hero}"
+            }
+          },
+          {
+            "kind": "cheatUntil",
+            "command": "open-roster",
+            "until": {
+              "kind": "present",
+              "name": "Board"
+            }
+          },
+          {
+            "kind": "hold",
+            "name": "Card_draco",
+            "seconds": 1
+          },
+          {
+            "kind": "vision",
+            "prompt": "is {hero} on screen?"
+          },
+          {
+            "kind": "wait",
+            "seconds": 1
+          }
+        ],
+        "settle": {
+          "kind": "present",
+          "name": "Card_{hero}"
+        },
+        "instanceOf": "hero-intro",
+        "values": [
+          {
+            "name": "hero",
+            "value": "draco"
+          }
+        ]
+      }
+    },
+    {
+      "name": "two parameters: the name follows the TEMPLATE's order, whatever order the values came in",
+      "template": {
+        "name": "level-run",
+        "parameters": [
+          "hero",
+          "level"
+        ],
+        "setup": [
+          "skip-tutorial"
+        ],
+        "steps": [
+          {
+            "kind": "click",
+            "name": "Hero_{hero}"
+          },
+          {
+            "kind": "click",
+            "name": "Level_{level}"
+          }
+        ],
+        "settle": {
+          "kind": "present",
+          "name": "Board"
+        }
+      },
+      "values": [
+        {
+          "name": "level",
+          "value": "5"
+        },
+        {
+          "name": "hero",
+          "value": "hero.mage_2"
+        }
+      ],
+      "expected": {
+        "name": "level-run.hero.mage_2.5",
+        "setup": [
+          "skip-tutorial"
+        ],
+        "steps": [
+          {
+            "kind": "click",
+            "name": "Hero_hero.mage_2"
+          },
+          {
+            "kind": "click",
+            "name": "Level_5"
+          }
+        ],
+        "settle": {
+          "kind": "present",
+          "name": "Board"
+        },
+        "instanceOf": "level-run",
+        "values": [
+          {
+            "name": "hero",
+            "value": "hero.mage_2"
+          },
+          {
+            "name": "level",
+            "value": "5"
+          }
+        ]
+      }
+    },
+    {
+      "name": "a hold name with the placeholder inside a longer name",
+      "template": {
+        "name": "slot-hold",
+        "parameters": [
+          "i"
+        ],
+        "steps": [
+          {
+            "kind": "hold",
+            "name": "Slot{0}_{i}",
+            "seconds": 1
+          }
+        ],
+        "settle": {
+          "kind": "present",
+          "name": "Board"
+        }
+      },
+      "values": [
+        {
+          "name": "i",
+          "value": "3"
+        }
+      ],
+      "expected": {
+        "name": "slot-hold.3",
+        "steps": [
+          {
+            "kind": "hold",
+            "name": "Slot{0}_3",
+            "seconds": 1
+          }
+        ],
+        "settle": {
+          "kind": "present",
+          "name": "Board"
+        },
+        "instanceOf": "slot-hold",
+        "values": [
+          {
+            "name": "i",
+            "value": "3"
+          }
+        ]
+      }
+    },
+    {
+      "name": "a missing value is refused",
+      "template": {
+        "name": "level-run",
+        "parameters": [
+          "hero",
+          "level"
+        ],
+        "steps": [
+          {
+            "kind": "click",
+            "name": "Go"
+          }
+        ],
+        "settle": {
+          "kind": "present",
+          "name": "Board"
+        }
+      },
+      "values": [
+        {
+          "name": "hero",
+          "value": "draco"
+        }
+      ],
+      "error": "needs a value for \"level\""
+    },
+    {
+      "name": "a value for a parameter the shot does not declare is refused",
+      "template": {
+        "name": "hero-intro",
+        "parameters": [
+          "hero"
+        ],
+        "steps": [
+          {
+            "kind": "click",
+            "name": "Go"
+          }
+        ],
+        "settle": {
+          "kind": "present",
+          "name": "Board"
+        }
+      },
+      "values": [
+        {
+          "name": "hero",
+          "value": "draco"
+        },
+        {
+          "name": "skin",
+          "value": "gold"
+        }
+      ],
+      "error": "has no parameter \"skin\""
+    },
+    {
+      "name": "a value with a space is refused (it would split a command)",
+      "template": {
+        "name": "hero-intro",
+        "parameters": [
+          "hero"
+        ],
+        "steps": [
+          {
+            "kind": "click",
+            "name": "Go"
+          }
+        ],
+        "settle": {
+          "kind": "present",
+          "name": "Board"
+        }
+      },
+      "values": [
+        {
+          "name": "hero",
+          "value": "dra co"
+        }
+      ],
+      "error": "is not a value a shot can take"
+    },
+    {
+      "name": "a name over 80 characters is refused, never cut",
+      "template": {
+        "name": "hero-intro",
+        "parameters": [
+          "hero"
+        ],
+        "steps": [
+          {
+            "kind": "click",
+            "name": "Go"
+          }
+        ],
+        "settle": {
+          "kind": "present",
+          "name": "Board"
+        }
+      },
+      "values": [
+        {
+          "name": "hero",
+          "value": "a-very-long-hero-identifier-that-goes-on-and-on-and-on-and-on-past-eighty"
+        }
+      ],
+      "error": "longer than 80 characters"
+    },
+    {
+      "name": "a shot with no parameters has no instances",
+      "template": {
+        "name": "plain",
+        "steps": [
+          {
+            "kind": "click",
+            "name": "Go"
+          }
+        ],
+        "settle": {
+          "kind": "present",
+          "name": "Board"
+        }
+      },
+      "values": [],
+      "error": "declares no parameters"
+    }
+  ]
+}
